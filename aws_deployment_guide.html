@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 1 — AWS Cloud Deployment Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2128;
+  --surface3: #21262d;
+  --border: #30363d;
+  --border2: #484f58;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --text3: #484f58;
+  --aws: #ff9900;
+  --green: #3fb950;
+  --blue: #58a6ff;
+  --red: #f85149;
+  --purple: #bc8cff;
+  --yellow: #e3b341;
+  --cyan: #39d353;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 260px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+  padding-bottom: 40px;
+}
+
+.sb-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 1;
+}
+
+.sb-header h2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--aws);
+  margin-bottom: 4px;
+}
+
+.sb-header p {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sb-section { padding: 12px 12px 0; }
+
+.sb-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 8px 8px 4px;
+}
+
+.sb-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text2);
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.sb-item:hover { background: var(--surface2); color: var(--text); }
+.sb-item.active { background: var(--surface3); color: var(--text); border: 1px solid var(--border); }
+
+.sb-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text3);
+  min-width: 18px;
+}
+
+.sb-item.active .sb-num { color: var(--aws); }
+
+/* ── Main ── */
+.main {
+  margin-left: 260px;
+  flex: 1;
+  padding: 40px 48px;
+  max-width: 900px;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── Page header ── */
+.page-header {
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--aws);
+  margin-bottom: 8px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+}
+
+.page-sub {
+  font-size: 13px;
+  color: var(--text2);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ── Step blocks ── */
+.step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.step-header:hover { background: var(--surface2); }
+.step.open .step-header { border-bottom: 1px solid var(--border); background: var(--surface2); }
+
+.step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text3);
+  min-width: 28px;
+}
+
+.step.open .step-num { color: var(--aws); }
+
+.step-info { flex: 1; }
+
+.step-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.step-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text2);
+  margin-top: 2px;
+}
+
+.step-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.step-chevron { color: var(--text3); font-size: 10px; transition: transform 0.2s; }
+.step.open .step-chevron { transform: rotate(180deg); }
+
+.step-body { display: none; padding: 20px; }
+.step.open .step-body { display: block; }
+
+/* ── Code blocks ── */
+.code-block {
+  background: #010409;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--surface3);
+  border-bottom: 1px solid var(--border);
+}
+
+.code-lang {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.code-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text2);
+}
+
+.copy-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  padding: 3px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.copy-btn:hover { border-color: var(--aws); color: var(--aws); }
+
+.code-body {
+  padding: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+  color: #e6edf3;
+}
+
+/* Syntax highlighting */
+.cmd { color: #79c0ff; }
+.flag { color: #d2a8ff; }
+.str { color: #a5d6ff; }
+.cmt { color: #8b949e; font-style: italic; }
+.val { color: #ffa657; }
+.key { color: #7ee787; }
+.env { color: #e3b341; }
+.path { color: #ff9900; }
+
+/* ── Info boxes ── */
+.info-box {
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  border-left: 3px solid;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.info-box.warn {
+  background: rgba(227,179,65,0.08);
+  border-color: var(--yellow);
+  color: #c9a227;
+}
+
+.info-box.tip {
+  background: rgba(63,185,80,0.06);
+  border-color: var(--green);
+  color: #3fb950;
+}
+
+.info-box.error {
+  background: rgba(248,81,73,0.07);
+  border-color: var(--red);
+  color: #f85149;
+}
+
+.info-box.info {
+  background: rgba(88,166,255,0.07);
+  border-color: var(--blue);
+  color: #79c0ff;
+}
+
+.info-box strong {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+  opacity: 0.8;
+}
+
+/* ── IO rows ── */
+.io-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  align-items: flex-start;
+}
+
+.io-row:last-child { border-bottom: none; }
+
+.io-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding-top: 1px;
+}
+
+.io-val { color: var(--text2); line-height: 1.5; }
+.io-val code {
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text);
+}
+
+/* ── Service cards ── */
+.service-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.service-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  border-top: 2px solid;
+}
+
+.svc-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.svc-aws { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--aws); margin-bottom: 6px; }
+.svc-cost { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--green); font-weight: 700; }
+.svc-spec { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
+
+/* ── File tree ── */
+.file-tree {
+  background: #010409;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 2;
+  margin: 10px 0;
+}
+
+.ft-dir { color: var(--blue); }
+.ft-file { color: var(--text2); }
+.ft-new { color: var(--green); }
+.ft-cmt { color: var(--text3); }
+
+/* ── Flow diagram ── */
+.flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 12px 0;
+}
+
+.flow-node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+.flow-arrow {
+  text-align: center;
+  color: var(--text3);
+  font-size: 10px;
+  padding: 2px 0;
+  margin-left: 22px;
+}
+
+.flow-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Cost table */
+.cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  margin: 12px 0;
+}
+
+.cost-table th {
+  padding: 8px 12px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  text-align: left;
+  color: var(--text2);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.cost-table td {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+
+.cost-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+.cost-total td { color: var(--green); font-weight: 700; border-top: 2px solid var(--border2); }
+
+/* Checklist */
+.checklist { margin: 10px 0; }
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.check-item:last-child { border-bottom: none; }
+
+.check-box {
+  width: 16px; height: 16px;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  font-size: 10px;
+}
+
+.check-box.checked {
+  background: var(--green);
+  border-color: var(--green);
+  color: #000;
+}
+
+.check-text { color: var(--text2); line-height: 1.5; }
+.check-text code {
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  padding: 0 4px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text);
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 20px 0;
+}
+
+@media (max-width: 800px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 20px 16px; }
+  .service-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<nav class="sidebar">
+  <div class="sb-header">
+    <h2>AWS · Phase 1</h2>
+    <p>Cloud Deployment Guide</p>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Start Here</div>
+    <button class="sb-item active" onclick="go('overview',this)"><span class="sb-num">00</span> Architecture + Costs</button>
+    <button class="sb-item" onclick="go('prereq',this)"><span class="sb-num">01</span> Prerequisites</button>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Infrastructure</div>
+    <button class="sb-item" onclick="go('ec2',this)"><span class="sb-num">02</span> EC2 — Main Server</button>
+    <button class="sb-item" onclick="go('rds',this)"><span class="sb-num">03</span> RDS — PostgreSQL</button>
+    <button class="sb-item" onclick="go('clickhouse',this)"><span class="sb-num">04</span> ClickHouse on EC2</button>
+    <button class="sb-item" onclick="go('redis',this)"><span class="sb-num">05</span> ElastiCache — Redis</button>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Application</div>
+    <button class="sb-item" onclick="go('code',this)"><span class="sb-num">06</span> Push Your Code</button>
+    <button class="sb-item" onclick="go('env',this)"><span class="sb-num">07</span> Environment Setup</button>
+    <button class="sb-item" onclick="go('airflow',this)"><span class="sb-num">08</span> Airflow Setup</button>
+    <button class="sb-item" onclick="go('api',this)"><span class="sb-num">09</span> FastAPI Setup</button>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Testing</div>
+    <button class="sb-item" onclick="go('test',this)"><span class="sb-num">10</span> Test Everything</button>
+    <button class="sb-item" onclick="go('debug',this)"><span class="sb-num">11</span> Common Errors</button>
+  </div>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+
+<!-- ═══════════════════════════════ 00 OVERVIEW ═══════════════════════════════ -->
+<div class="page active" id="pg-overview">
+  <div class="page-header">
+    <div class="page-eyebrow">Phase 1 · AWS · Pilot</div>
+    <div class="page-title">Architecture + Cost Estimate</div>
+    <div class="page-sub">Everything runs on AWS. Minimal cost setup for &lt;10K records/day, &lt;20 users.</div>
+  </div>
+
+  <div class="service-grid">
+    <div class="service-card" style="border-top-color:#ff9900">
+      <div class="svc-name">PostgreSQL (OLTP)</div>
+      <div class="svc-aws">RDS db.t3.micro — Single AZ</div>
+      <div class="svc-cost">~$15–18/mo</div>
+      <div class="svc-spec">20 GB storage · Automated backups<br>Free tier eligible first 12 months</div>
+    </div>
+    <div class="service-card" style="border-top-color:#58a6ff">
+      <div class="svc-name">ClickHouse (OLAP)</div>
+      <div class="svc-aws">Self-hosted on EC2 t3.medium</div>
+      <div class="svc-cost">~$30/mo</div>
+      <div class="svc-spec">2 vCPU · 4 GB RAM · 50 GB gp3<br>Shares server with Airflow</div>
+    </div>
+    <div class="service-card" style="border-top-color:#3fb950">
+      <div class="svc-name">Airflow (Orchestration)</div>
+      <div class="svc-aws">Self-hosted on same EC2</div>
+      <div class="svc-cost">Included above</div>
+      <div class="svc-spec">Runs as systemd service<br>DAGs pulled from GitHub</div>
+    </div>
+    <div class="service-card" style="border-top-color:#bc8cff">
+      <div class="svc-name">Redis (Cache)</div>
+      <div class="svc-aws">ElastiCache cache.t3.micro</div>
+      <div class="svc-cost">~$12–14/mo</div>
+      <div class="svc-spec">512 MB · Single node<br>More than enough for pilot</div>
+    </div>
+    <div class="service-card" style="border-top-color:#e3b341">
+      <div class="svc-name">FastAPI (API)</div>
+      <div class="svc-aws">EC2 t3.small (separate)</div>
+      <div class="svc-cost">~$15/mo</div>
+      <div class="svc-spec">2 vCPU · 2 GB RAM<br>Runs behind nginx</div>
+    </div>
+    <div class="service-card" style="border-top-color:#39d353">
+      <div class="svc-name">S3 (CSV drop zone)</div>
+      <div class="svc-aws">S3 Standard</div>
+      <div class="svc-cost">&lt;$1/mo</div>
+      <div class="svc-spec">CSV files land here<br>Ingestors read from S3</div>
+    </div>
+  </div>
+
+  <table class="cost-table" style="margin-top:20px">
+    <tr><th>Service</th><th>AWS Resource</th><th>Est. Monthly</th></tr>
+    <tr><td>PostgreSQL</td><td>RDS db.t3.micro</td><td>$15–18</td></tr>
+    <tr><td>ClickHouse + Airflow</td><td>EC2 t3.medium</td><td>$30</td></tr>
+    <tr><td>FastAPI</td><td>EC2 t3.small</td><td>$15</td></tr>
+    <tr><td>Redis</td><td>ElastiCache cache.t3.micro</td><td>$13</td></tr>
+    <tr><td>S3 + Data Transfer</td><td>S3 Standard</td><td>&lt;$2</td></tr>
+    <tr class="cost-total"><td colspan="2">TOTAL ESTIMATE</td><td>~$75–80/mo</td></tr>
+  </table>
+
+  <div class="info-box tip" style="margin-top:16px">
+    <strong>Free Tier Note</strong>
+    If your AWS account is under 12 months old, RDS db.t3.micro and 750hrs/mo EC2 t2.micro are free. You can start even cheaper by using t2.micro for FastAPI and qualifying for free RDS.
+  </div>
+
+  <div style="margin-top:24px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Data Flow on AWS</div>
+    <div class="flow">
+      <div class="flow-node"><div class="flow-dot" style="background:#e3b341"></div> S3 Bucket — CSV files dropped here (loan, calls, payments, crm, sms, tts)</div>
+      <div class="flow-arrow">↓ Airflow DAG reads S3 every 15 min</div>
+      <div class="flow-node"><div class="flow-dot" style="background:#ff9900"></div> RDS PostgreSQL — Ingestor validates + writes (OLTP)</div>
+      <div class="flow-arrow">↓ Airflow ETL DAG polls PG watermark</div>
+      <div class="flow-node"><div class="flow-dot" style="background:#58a6ff"></div> ClickHouse on EC2 — Bronze → Silver → Gold (OLAP)</div>
+      <div class="flow-arrow">↓ FastAPI queries Gold MVs</div>
+      <div class="flow-node"><div class="flow-dot" style="background:#bc8cff"></div> ElastiCache Redis — Caches Gold responses (30–60s TTL)</div>
+      <div class="flow-arrow">↓ API returns cached result</div>
+      <div class="flow-node"><div class="flow-dot" style="background:#3fb950"></div> FastAPI on EC2 t3.small — Dashboard endpoints for all roles</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 01 PREREQ ═══════════════════════════════ -->
+<div class="page" id="pg-prereq">
+  <div class="page-header">
+    <div class="page-eyebrow">Step 01</div>
+    <div class="page-title">Prerequisites</div>
+    <div class="page-sub">Install these on your local machine before anything else. These are just CLI tools — nothing runs locally.</div>
+  </div>
+
+  <div class="step open">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">1.1</div>
+      <div class="step-info"><div class="step-title">Install AWS CLI</div><div class="step-sub">Lets you control AWS from your terminal</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Mac</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">curl</span> <span class="str">"https://awscli.amazonaws.com/AWSCLIV2.pkg"</span> <span class="flag">-o</span> <span class="str">"AWSCLIV2.pkg"</span>
+<span class="cmd">sudo installer</span> <span class="flag">-pkg</span> AWSCLIV2.pkg <span class="flag">-target</span> /
+<span class="cmd">aws</span> <span class="flag">--version</span>  <span class="cmt"># should print: aws-cli/2.x.x</span></div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Windows (PowerShell)</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># Download from: https://awscli.amazonaws.com/AWSCLIV2.msi and run installer</span>
+<span class="cmd">aws</span> <span class="flag">--version</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">1.2</div>
+      <div class="step-info"><div class="step-title">Configure AWS credentials</div><div class="step-sub">Get Access Key from AWS Console → IAM → Your user → Security credentials</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Run once</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">aws configure</span>
+<span class="cmt"># It will ask 4 questions — answer like this:</span>
+AWS Access Key ID: <span class="str">AKIA...YOUR_KEY</span>
+AWS Secret Access Key: <span class="str">your_secret_here</span>
+Default region name: <span class="val">ap-south-1</span>       <span class="cmt"># Mumbai — closest to India</span>
+Default output format: <span class="val">json</span></div>
+      </div>
+      <div class="info-box tip">
+        <strong>Verify it works</strong>
+        Run <code>aws sts get-caller-identity</code> — if you see your account ID printed, credentials are working.
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">1.3</div>
+      <div class="step-info"><div class="step-title">Install SSH client + create key pair</div><div class="step-sub">Need this to connect to EC2 servers</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Create EC2 key pair via AWS CLI</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">aws ec2 create-key-pair</span> \
+  <span class="flag">--key-name</span> <span class="str">compliance-pilot-key</span> \
+  <span class="flag">--query</span> <span class="str">'KeyMaterial'</span> \
+  <span class="flag">--output</span> text > ~/.ssh/compliance-pilot-key.pem
+
+<span class="cmd">chmod</span> 400 ~/.ssh/compliance-pilot-key.pem
+<span class="cmt"># This .pem file is your password to SSH into EC2. Keep it safe.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">1.4</div>
+      <div class="step-info"><div class="step-title">Create S3 bucket for CSV files</div><div class="step-sub">This is where source CSV files will be dropped</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">aws s3 mb</span> s3://compliance-pilot-data <span class="flag">--region</span> ap-south-1
+
+<span class="cmt"># Create folders for each source</span>
+<span class="cmd">aws s3api put-object</span> <span class="flag">--bucket</span> compliance-pilot-data <span class="flag">--key</span> loans/
+<span class="cmd">aws s3api put-object</span> <span class="flag">--bucket</span> compliance-pilot-data <span class="flag">--key</span> calls/
+<span class="cmd">aws s3api put-object</span> <span class="flag">--bucket</span> compliance-pilot-data <span class="flag">--key</span> payments/
+<span class="cmd">aws s3api put-object</span> <span class="flag">--bucket</span> compliance-pilot-data <span class="flag">--key</span> crm/
+<span class="cmd">aws s3api put-object</span> <span class="flag">--bucket</span> compliance-pilot-data <span class="flag">--key</span> sms/
+<span class="cmd">aws s3api put-object</span> <span class="flag">--bucket</span> compliance-pilot-data <span class="flag">--key</span> tts/
+
+<span class="cmt"># Upload your test CSVs now</span>
+<span class="cmd">aws s3 cp</span> ./data/loans_test.csv s3://compliance-pilot-data/loans/
+<span class="cmd">aws s3 cp</span> ./data/calls_test.csv s3://compliance-pilot-data/calls/</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 02 EC2 ═══════════════════════════════ -->
+<div class="page" id="pg-ec2">
+  <div class="page-header">
+    <div class="page-eyebrow">Step 02</div>
+    <div class="page-title">EC2 — Main Server</div>
+    <div class="page-sub">One EC2 t3.medium hosts both ClickHouse and Airflow. Ubuntu 22.04.</div>
+  </div>
+
+  <div class="step open">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">2.1</div>
+      <div class="step-info"><div class="step-title">Create Security Group</div><div class="step-sub">Controls what ports are open — do this before launching EC2</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># Create security group</span>
+<span class="cmd">aws ec2 create-security-group</span> \
+  <span class="flag">--group-name</span> compliance-main-sg \
+  <span class="flag">--description</span> <span class="str">"Compliance pipeline main server"</span>
+
+<span class="cmt"># Save the GroupId printed — looks like sg-0abc123...</span>
+<span class="cmt"># Replace sg-XXXXXXXX below with your actual ID</span>
+
+<span class="cmt"># Allow SSH from your IP only (safer)</span>
+<span class="cmd">aws ec2 authorize-security-group-ingress</span> \
+  <span class="flag">--group-id</span> sg-XXXXXXXX \
+  <span class="flag">--protocol</span> tcp <span class="flag">--port</span> 22 \
+  <span class="flag">--cidr</span> <span class="str">0.0.0.0/0</span>   <span class="cmt"># replace with your IP/32 for security</span>
+
+<span class="cmt"># Allow Airflow web UI port</span>
+<span class="cmd">aws ec2 authorize-security-group-ingress</span> \
+  <span class="flag">--group-id</span> sg-XXXXXXXX \
+  <span class="flag">--protocol</span> tcp <span class="flag">--port</span> 8080 \
+  <span class="flag">--cidr</span> <span class="str">0.0.0.0/0</span>
+
+<span class="cmt"># Allow ClickHouse HTTP port (for testing)</span>
+<span class="cmd">aws ec2 authorize-security-group-ingress</span> \
+  <span class="flag">--group-id</span> sg-XXXXXXXX \
+  <span class="flag">--protocol</span> tcp <span class="flag">--port</span> 8123 \
+  <span class="flag">--cidr</span> <span class="str">0.0.0.0/0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">2.2</div>
+      <div class="step-info"><div class="step-title">Launch EC2 t3.medium</div><div class="step-sub">Ubuntu 22.04 — this is the main data server</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">aws ec2 run-instances</span> \
+  <span class="flag">--image-id</span> ami-0f58b397bc5c1f2e8 \  <span class="cmt"># Ubuntu 22.04 ap-south-1</span>
+  <span class="flag">--instance-type</span> t3.medium \
+  <span class="flag">--key-name</span> compliance-pilot-key \
+  <span class="flag">--security-group-ids</span> sg-XXXXXXXX \
+  <span class="flag">--block-device-mappings</span> <span class="str">'[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":50,"VolumeType":"gp3"}}]'</span> \
+  <span class="flag">--tag-specifications</span> <span class="str">'ResourceType=instance,Tags=[{Key=Name,Value=compliance-main}]'</span> \
+  <span class="flag">--count</span> 1
+
+<span class="cmt"># Note the InstanceId printed — use it to get the public IP</span>
+<span class="cmd">aws ec2 describe-instances</span> \
+  <span class="flag">--filters</span> <span class="str">"Name=tag:Name,Values=compliance-main"</span> \
+  <span class="flag">--query</span> <span class="str">"Reservations[0].Instances[0].PublicIpAddress"</span> \
+  <span class="flag">--output</span> text</div>
+      </div>
+      <div class="info-box warn">
+        <strong>Wait 2 minutes after launching</strong>
+        EC2 takes about 2 minutes to boot. If SSH fails immediately, just wait and try again.
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">2.3</div>
+      <div class="step-info"><div class="step-title">SSH into EC2 + Install base packages</div><div class="step-sub">Run this once after first login</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">From your local machine</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">ssh</span> <span class="flag">-i</span> ~/.ssh/compliance-pilot-key.pem ubuntu@<span class="val">YOUR_EC2_IP</span></div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Run inside EC2 after login</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">sudo apt update</span> && <span class="cmd">sudo apt upgrade</span> <span class="flag">-y</span>
+
+<span class="cmt"># Python + pip</span>
+<span class="cmd">sudo apt install</span> <span class="flag">-y</span> python3 python3-pip python3-venv git curl unzip
+
+<span class="cmt"># AWS CLI (to read from S3)</span>
+<span class="cmd">curl</span> <span class="str">"https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"</span> <span class="flag">-o</span> awscliv2.zip
+<span class="cmd">unzip</span> awscliv2.zip
+<span class="cmd">sudo ./aws/install</span>
+
+<span class="cmt"># Verify</span>
+<span class="cmd">python3 --version</span>   <span class="cmt"># should be 3.10+</span>
+<span class="cmd">aws --version</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">2.4</div>
+      <div class="step-info"><div class="step-title">Attach IAM Role for S3 access</div><div class="step-sub">EC2 needs permission to read S3 — do this instead of hardcoding keys</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">From your local machine</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># Create IAM role</span>
+<span class="cmd">aws iam create-role</span> \
+  <span class="flag">--role-name</span> compliance-ec2-role \
+  <span class="flag">--assume-role-policy-document</span> <span class="str">'{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole"}]}'</span>
+
+<span class="cmt"># Attach S3 read policy</span>
+<span class="cmd">aws iam attach-role-policy</span> \
+  <span class="flag">--role-name</span> compliance-ec2-role \
+  <span class="flag">--policy-arn</span> arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+<span class="cmt"># Create instance profile and attach</span>
+<span class="cmd">aws iam create-instance-profile</span> <span class="flag">--instance-profile-name</span> compliance-ec2-profile
+<span class="cmd">aws iam add-role-to-instance-profile</span> \
+  <span class="flag">--instance-profile-name</span> compliance-ec2-profile \
+  <span class="flag">--role-name</span> compliance-ec2-role
+
+<span class="cmt"># Attach to your EC2 instance (replace i-XXXXXXXX)</span>
+<span class="cmd">aws ec2 associate-iam-instance-profile</span> \
+  <span class="flag">--instance-id</span> i-XXXXXXXX \
+  <span class="flag">--iam-instance-profile</span> Name=compliance-ec2-profile</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 03 RDS ═══════════════════════════════ -->
+<div class="page" id="pg-rds">
+  <div class="page-header">
+    <div class="page-eyebrow">Step 03</div>
+    <div class="page-title">RDS — PostgreSQL</div>
+    <div class="page-sub">Managed PostgreSQL. Your ingestors write here. Airflow reads watermark from here.</div>
+  </div>
+
+  <div class="step open">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">3.1</div>
+      <div class="step-info"><div class="step-title">Create RDS security group</div><div class="step-sub">Only allow EC2 to connect — not the whole internet</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">aws ec2 create-security-group</span> \
+  <span class="flag">--group-name</span> compliance-rds-sg \
+  <span class="flag">--description</span> <span class="str">"RDS PostgreSQL — EC2 access only"</span>
+
+<span class="cmt"># Allow port 5432 ONLY from EC2 security group (not internet)</span>
+<span class="cmd">aws ec2 authorize-security-group-ingress</span> \
+  <span class="flag">--group-id</span> sg-RDS_ID \
+  <span class="flag">--protocol</span> tcp \
+  <span class="flag">--port</span> 5432 \
+  <span class="flag">--source-group</span> sg-EC2_ID  <span class="cmt"># your compliance-main-sg id</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">3.2</div>
+      <div class="step-info"><div class="step-title">Launch RDS db.t3.micro</div><div class="step-sub">PostgreSQL 15 — cheapest option</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">aws rds create-db-instance</span> \
+  <span class="flag">--db-instance-identifier</span> compliance-postgres \
+  <span class="flag">--db-instance-class</span> db.t3.micro \
+  <span class="flag">--engine</span> postgres \
+  <span class="flag">--engine-version</span> <span class="str">"15.4"</span> \
+  <span class="flag">--allocated-storage</span> 20 \
+  <span class="flag">--storage-type</span> gp2 \
+  <span class="flag">--master-username</span> complianceadmin \
+  <span class="flag">--master-user-password</span> <span class="str">"StrongPass123!"</span> \
+  <span class="flag">--db-name</span> compliance_db \
+  <span class="flag">--vpc-security-group-ids</span> sg-RDS_ID \
+  <span class="flag">--no-publicly-accessible \</span>
+  <span class="flag">--backup-retention-period</span> 7
+
+<span class="cmt"># Takes 5-10 min to create. Get the endpoint when ready:</span>
+<span class="cmd">aws rds describe-db-instances</span> \
+  <span class="flag">--db-instance-identifier</span> compliance-postgres \
+  <span class="flag">--query</span> <span class="str">"DBInstances[0].Endpoint.Address"</span> \
+  <span class="flag">--output</span> text
+<span class="cmt"># Save this — looks like: compliance-postgres.xxxx.ap-south-1.rds.amazonaws.com</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">3.3</div>
+      <div class="step-info"><div class="step-title">Create tables via psql from EC2</div><div class="step-sub">SSH into EC2, install psql, run your schema</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Inside EC2</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># Install psql client</span>
+<span class="cmd">sudo apt install</span> <span class="flag">-y</span> postgresql-client
+
+<span class="cmt"># Connect to RDS</span>
+<span class="cmd">psql</span> <span class="flag">-h</span> <span class="val">YOUR_RDS_ENDPOINT</span> \
+     <span class="flag">-U</span> complianceadmin \
+     <span class="flag">-d</span> compliance_db
+
+<span class="cmt"># Once inside psql, run your schema SQL:</span>
+<span class="cmt"># \i /home/ubuntu/compliance-pipeline/schema.sql</span>
+<span class="cmt"># OR paste your CREATE TABLE statements directly</span></div>
+      </div>
+      <div class="info-box info">
+        <strong>updated_at trigger — critical</strong>
+        Every table needs this trigger so Airflow watermark queries work. Add to your schema.sql:<br><br>
+        <code>CREATE OR REPLACE FUNCTION update_updated_at() RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = NOW(); RETURN NEW; END; $$ LANGUAGE plpgsql;</code><br><br>
+        Then for each table:<br>
+        <code>CREATE TRIGGER set_updated_at BEFORE UPDATE ON loans FOR EACH ROW EXECUTE FUNCTION update_updated_at();</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 04 CLICKHOUSE ═══════════════════════════════ -->
+<div class="page" id="pg-clickhouse">
+  <div class="page-header">
+    <div class="page-eyebrow">Step 04</div>
+    <div class="page-title">ClickHouse on EC2</div>
+    <div class="page-sub">Install ClickHouse on the t3.medium. Create Bronze/Silver/Gold tables. Run on same EC2 as Airflow to save cost.</div>
+  </div>
+
+  <div class="step open">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">4.1</div>
+      <div class="step-info"><div class="step-title">Install ClickHouse</div><div class="step-sub">Run inside EC2</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Inside EC2</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">sudo apt-get install</span> <span class="flag">-y</span> apt-transport-https ca-certificates curl gnupg
+
+<span class="cmd">curl</span> <span class="flag">-fsSL</span> https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key \
+  | <span class="cmd">sudo gpg</span> <span class="flag">--dearmor</span> <span class="flag">-o</span> /usr/share/keyrings/clickhouse-keyring.gpg
+
+<span class="cmd">echo</span> <span class="str">"deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg] https://packages.clickhouse.com/deb stable main"</span> \
+  | <span class="cmd">sudo tee</span> /etc/apt/sources.list.d/clickhouse.list
+
+<span class="cmd">sudo apt update</span>
+<span class="cmd">sudo apt install</span> <span class="flag">-y</span> clickhouse-server clickhouse-client
+
+<span class="cmt"># Start ClickHouse and enable on boot</span>
+<span class="cmd">sudo systemctl start</span> clickhouse-server
+<span class="cmd">sudo systemctl enable</span> clickhouse-server
+<span class="cmd">sudo systemctl status</span> clickhouse-server  <span class="cmt"># should say active (running)</span>
+
+<span class="cmt"># Test connection</span>
+<span class="cmd">clickhouse-client</span>  <span class="cmt"># opens interactive shell</span>
+<span class="cmt"># Type: SELECT 1;  — should return 1</span>
+<span class="cmt"># Type: exit  to quit</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">4.2</div>
+      <div class="step-info"><div class="step-title">Create database + Bronze/Silver/Gold tables</div><div class="step-sub">Run your transform SQLs here</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Inside EC2</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># Create database</span>
+<span class="cmd">clickhouse-client</span> <span class="flag">--query</span> <span class="str">"CREATE DATABASE IF NOT EXISTS compliance"</span>
+
+<span class="cmt"># Run your Bronze table DDLs</span>
+<span class="cmd">clickhouse-client</span> <span class="flag">--database</span> compliance \
+  <span class="flag">--queries-file</span> /home/ubuntu/compliance-pipeline/transforms/bronze_tables.sql
+
+<span class="cmt"># Run Silver table DDLs</span>
+<span class="cmd">clickhouse-client</span> <span class="flag">--database</span> compliance \
+  <span class="flag">--queries-file</span> /home/ubuntu/compliance-pipeline/transforms/silver_tables.sql
+
+<span class="cmt"># Run Gold materialized view DDLs</span>
+<span class="cmd">clickhouse-client</span> <span class="flag">--database</span> compliance \
+  <span class="flag">--queries-file</span> /home/ubuntu/compliance-pipeline/transforms/gold_views.sql
+
+<span class="cmt"># Verify tables were created</span>
+<span class="cmd">clickhouse-client</span> <span class="flag">--query</span> <span class="str">"SHOW TABLES FROM compliance"</span></div>
+      </div>
+      <div class="info-box warn">
+        <strong>Partition by (loan_id, toYYYYMM(event_date)) on Bronze tables</strong>
+        Add this to your Bronze CREATE TABLE statements. Example for loans_raw:<br><code>ENGINE = MergeTree() PARTITION BY toYYYYMM(disbursement_date) ORDER BY (loan_id, disbursement_date)</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 05 REDIS ═══════════════════════════════ -->
+<div class="page" id="pg-redis">
+  <div class="page-header">
+    <div class="page-eyebrow">Step 05</div>
+    <div class="page-title">ElastiCache — Redis</div>
+    <div class="page-sub">Managed Redis. Cheapest single-node setup. FastAPI cache layer connects here.</div>
+  </div>
+
+  <div class="step open">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">5.1</div>
+      <div class="step-info"><div class="step-title">Create Redis security group + cluster</div><div class="step-sub">Only allow FastAPI EC2 to reach Redis</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># Security group for Redis</span>
+<span class="cmd">aws ec2 create-security-group</span> \
+  <span class="flag">--group-name</span> compliance-redis-sg \
+  <span class="flag">--description</span> <span class="str">"Redis — EC2 only"</span>
+
+<span class="cmd">aws ec2 authorize-security-group-ingress</span> \
+  <span class="flag">--group-id</span> sg-REDIS_ID \
+  <span class="flag">--protocol</span> tcp \
+  <span class="flag">--port</span> 6379 \
+  <span class="flag">--source-group</span> sg-EC2_ID
+
+<span class="cmt"># Create cache subnet group first</span>
+<span class="cmd">aws elasticache create-cache-subnet-group</span> \
+  <span class="flag">--cache-subnet-group-name</span> compliance-redis-subnet \
+  <span class="flag">--cache-subnet-group-description</span> <span class="str">"Redis subnet"</span> \
+  <span class="flag">--subnet-ids</span> subnet-XXXXXXXX  <span class="cmt"># get from VPC console</span>
+
+<span class="cmt"># Create Redis cluster</span>
+<span class="cmd">aws elasticache create-cache-cluster</span> \
+  <span class="flag">--cache-cluster-id</span> compliance-redis \
+  <span class="flag">--cache-node-type</span> cache.t3.micro \
+  <span class="flag">--engine</span> redis \
+  <span class="flag">--num-cache-nodes</span> 1 \
+  <span class="flag">--cache-subnet-group-name</span> compliance-redis-subnet \
+  <span class="flag">--security-group-ids</span> sg-REDIS_ID
+
+<span class="cmt"># Get endpoint when ready (takes ~3 min)</span>
+<span class="cmd">aws elasticache describe-cache-clusters</span> \
+  <span class="flag">--cache-cluster-id</span> compliance-redis \
+  <span class="flag">--show-cache-node-info</span> \
+  <span class="flag">--query</span> <span class="str">"CacheClusters[0].CacheNodes[0].Endpoint.Address"</span> \
+  <span class="flag">--output</span> text
+<span class="cmt"># Looks like: compliance-redis.xxxx.cache.amazonaws.com</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 06 CODE ═══════════════════════════════ -->
+<div class="page" id="pg-code">
+  <div class="page-header">
+    <div class="page-eyebrow">Step 06</div>
+    <div class="page-title">Push Your Code to EC2</div>
+    <div class="page-sub">Two options: GitHub (recommended) or direct SCP. Use GitHub — easier to update later.</div>
+  </div>
+
+  <div class="step open">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">6.1</div>
+      <div class="step-info"><div class="step-title">Option A — GitHub (Recommended)</div><div class="step-sub">Push local code to GitHub, clone on EC2</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">On your local machine first</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># In your project root folder</span>
+<span class="cmd">git init</span>
+<span class="cmd">git add</span> .
+
+<span class="cmt"># Create .gitignore BEFORE committing</span>
+<span class="cmd">cat</span> > .gitignore << <span class="str">EOF</span>
+.env
+*.pem
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.log
+<span class="str">EOF</span>
+
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="str">"Initial Phase 1 commit"</span>
+
+<span class="cmt"># Create repo on GitHub (via browser or gh cli), then:</span>
+<span class="cmd">git remote add origin</span> https://github.com/YOURUSERNAME/compliance-pipeline.git
+<span class="cmd">git push</span> <span class="flag">-u</span> origin main</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Inside EC2 — clone the repo</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">cd</span> /home/ubuntu
+<span class="cmd">git clone</span> https://github.com/YOURUSERNAME/compliance-pipeline.git
+<span class="cmd">cd</span> compliance-pipeline
+
+<span class="cmt"># Verify your folder structure is correct</span>
+<span class="cmd">ls</span> <span class="flag">-la</span>
+<span class="cmt"># Should see: ingestion/ airflow/ transforms/ api/ quality/ config.py</span></div>
+      </div>
+      <div class="info-box warn">
+        <strong>Never commit .env file</strong>
+        Your .env has DB passwords. It must be in .gitignore. You'll create it manually on EC2 in Step 07.
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">6.2</div>
+      <div class="step-info"><div class="step-title">Option B — Direct SCP (quicker for first time)</div><div class="step-sub">Copy files directly from local machine to EC2</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">From local machine</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">scp</span> <span class="flag">-i</span> ~/.ssh/compliance-pilot-key.pem \
+    <span class="flag">-r</span> ./compliance-pipeline \
+    ubuntu@<span class="val">YOUR_EC2_IP</span>:/home/ubuntu/</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">6.3</div>
+      <div class="step-info"><div class="step-title">Verify your Airflow folder structure</div><div class="step-sub">Airflow is strict about where DAGs and helpers live</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="file-tree">
+<span class="ft-dir">airflow/</span>
+  <span class="ft-dir">dags/</span>
+    <span class="ft-file">dags_helper.py</span>    <span class="ft-cmt">&lt;-- must be INSIDE /dags, not outside</span>
+    <span class="ft-file">dag_loans.py</span>
+    <span class="ft-file">dag_calls.py</span>
+    <span class="ft-file">dag_payments.py</span>
+    <span class="ft-file">dag_crm.py</span>
+    <span class="ft-file">dag_messages.py</span>
+      </div>
+      <div class="info-box info">
+        <strong>dags_helper.py import path</strong>
+        Since dags_helper.py is inside /dags, your DAG files import it as:<br>
+        <code>from dags_helper import get_watermark, extract_from_postgres</code><br><br>
+        NOT as <code>from airflow.dags_helper import ...</code> — Airflow adds /dags to sys.path automatically, so the simple import works.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 07 ENV ═══════════════════════════════ -->
+<div class="page" id="pg-env">
+  <div class="page-header">
+    <div class="page-eyebrow">Step 07</div>
+    <div class="page-title">Environment Setup</div>
+    <div class="page-sub">Python virtualenv, pip install, .env file — run on EC2 for both servers.</div>
+  </div>
+
+  <div class="step open">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">7.1</div>
+      <div class="step-info"><div class="step-title">Create virtualenv + install dependencies</div><div class="step-sub">Inside EC2 (main server — ClickHouse + Airflow)</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Inside EC2</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">cd</span> /home/ubuntu/compliance-pipeline
+
+<span class="cmt"># Create virtualenv</span>
+<span class="cmd">python3 -m venv</span> venv
+<span class="cmd">source</span> venv/bin/activate
+
+<span class="cmt"># Install all dependencies</span>
+<span class="cmd">pip install</span> \
+  pandas \
+  psycopg2-binary \
+  clickhouse-driver \
+  boto3 \
+  apache-airflow==2.8.1 \
+  apache-airflow-providers-postgres \
+  redis \
+  python-dotenv \
+  sqlalchemy \
+  pydantic
+
+<span class="cmt"># Freeze to requirements.txt for reproducibility</span>
+<span class="cmd">pip freeze</span> > requirements.txt</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">7.2</div>
+      <div class="step-info"><div class="step-title">Create .env file on EC2</div><div class="step-sub">All connection strings live here — never hardcoded</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Create /home/ubuntu/compliance-pipeline/.env</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">nano</span> /home/ubuntu/compliance-pipeline/.env
+
+<span class="cmt"># Paste this content — replace values with yours</span>
+
+<span class="cmt"># PostgreSQL (RDS)</span>
+<span class="env">PG_HOST</span>=compliance-postgres.xxxx.ap-south-1.rds.amazonaws.com
+<span class="env">PG_PORT</span>=5432
+<span class="env">PG_USER</span>=complianceadmin
+<span class="env">PG_PASSWORD</span>=StrongPass123!
+<span class="env">PG_DATABASE</span>=compliance_db
+
+<span class="cmt"># ClickHouse (localhost — same EC2)</span>
+<span class="env">CH_HOST</span>=localhost
+<span class="env">CH_PORT</span>=9000
+<span class="env">CH_DATABASE</span>=compliance
+<span class="env">CH_USER</span>=default
+<span class="env">CH_PASSWORD</span>=          <span class="cmt"># empty by default on fresh ClickHouse install</span>
+
+<span class="cmt"># Redis (ElastiCache)</span>
+<span class="env">REDIS_HOST</span>=compliance-redis.xxxx.cache.amazonaws.com
+<span class="env">REDIS_PORT</span>=6379
+
+<span class="cmt"># S3</span>
+<span class="env">S3_BUCKET</span>=compliance-pilot-data
+<span class="env">AWS_REGION</span>=ap-south-1</div>
+      </div>
+      <div class="info-box tip">
+        <strong>In config.py — load .env like this</strong>
+        <code>from dotenv import load_dotenv; import os; load_dotenv()</code><br>
+        Then: <code>PG_HOST = os.getenv("PG_HOST")</code><br>
+        Build connection string: <code>f"postgresql://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DATABASE}"</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 08 AIRFLOW ═══════════════════════════════ -->
+<div class="page" id="pg-airflow">
+  <div class="page-header">
+    <div class="page-eyebrow">Step 08</div>
+    <div class="page-title">Airflow Setup</div>
+    <div class="page-sub">Initialize Airflow DB, create admin user, set DAGs folder, add connections, start as systemd service.</div>
+  </div>
+
+  <div class="step open">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">8.1</div>
+      <div class="step-info"><div class="step-title">Initialize Airflow</div><div class="step-sub">Must do before first run</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Inside EC2</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">source</span> /home/ubuntu/compliance-pipeline/venv/bin/activate
+<span class="cmd">cd</span> /home/ubuntu/compliance-pipeline
+
+<span class="cmt"># Set Airflow home to your project</span>
+<span class="cmd">export</span> <span class="env">AIRFLOW_HOME</span>=/home/ubuntu/compliance-pipeline/airflow
+
+<span class="cmt"># Point Airflow to your dags directory</span>
+<span class="cmt"># Edit airflow/airflow.cfg OR set via env var:</span>
+<span class="cmd">export</span> <span class="env">AIRFLOW__CORE__DAGS_FOLDER</span>=/home/ubuntu/compliance-pipeline/airflow/dags
+<span class="cmd">export</span> <span class="env">AIRFLOW__CORE__LOAD_EXAMPLES</span>=False
+
+<span class="cmt"># Initialize the Airflow database (SQLite by default — fine for pilot)</span>
+<span class="cmd">airflow db init</span>
+
+<span class="cmt"># Create admin user</span>
+<span class="cmd">airflow users create</span> \
+  <span class="flag">--username</span> admin \
+  <span class="flag">--password</span> <span class="str">AdminPass123!</span> \
+  <span class="flag">--firstname</span> Admin \
+  <span class="flag">--lastname</span> User \
+  <span class="flag">--role</span> Admin \
+  <span class="flag">--email</span> admin@compliance.com</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">8.2</div>
+      <div class="step-info"><div class="step-title">Add PostgreSQL connection in Airflow</div><div class="step-sub">So DAGs can use postgres_default connection ID</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Inside EC2</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">airflow connections add</span> postgres_compliance \
+  <span class="flag">--conn-type</span> postgres \
+  <span class="flag">--conn-host</span> <span class="val">YOUR_RDS_ENDPOINT</span> \
+  <span class="flag">--conn-schema</span> compliance_db \
+  <span class="flag">--conn-login</span> complianceadmin \
+  <span class="flag">--conn-password</span> <span class="str">StrongPass123!</span> \
+  <span class="flag">--conn-port</span> 5432
+
+<span class="cmt"># Verify it was added</span>
+<span class="cmd">airflow connections get</span> postgres_compliance</div>
+      </div>
+      <div class="info-box info">
+        <strong>Update your dags_helper.py</strong>
+        In dags_helper.py, if you use Airflow's PostgresHook, use <code>conn_id="postgres_compliance"</code> — this matches the connection name above.<br><br>
+        Example: <code>hook = PostgresHook(postgres_conn_id="postgres_compliance")<br>conn = hook.get_conn()</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">8.3</div>
+      <div class="step-info"><div class="step-title">Run Airflow as systemd service</div><div class="step-sub">So it restarts on EC2 reboot automatically</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Create systemd unit files</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># Airflow Webserver service</span>
+<span class="cmd">sudo nano</span> /etc/systemd/system/airflow-webserver.service
+
+<span class="cmt"># Paste:</span>
+[Unit]
+Description=Airflow Webserver
+After=network.target
+
+[Service]
+User=ubuntu
+Environment=<span class="env">AIRFLOW_HOME</span>=/home/ubuntu/compliance-pipeline/airflow
+Environment=<span class="env">AIRFLOW__CORE__DAGS_FOLDER</span>=/home/ubuntu/compliance-pipeline/airflow/dags
+Environment=<span class="env">AIRFLOW__CORE__LOAD_EXAMPLES</span>=False
+ExecStart=/home/ubuntu/compliance-pipeline/venv/bin/airflow webserver <span class="flag">-p</span> 8080
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Airflow Scheduler service</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">sudo nano</span> /etc/systemd/system/airflow-scheduler.service
+
+[Unit]
+Description=Airflow Scheduler
+After=network.target
+
+[Service]
+User=ubuntu
+Environment=<span class="env">AIRFLOW_HOME</span>=/home/ubuntu/compliance-pipeline/airflow
+Environment=<span class="env">AIRFLOW__CORE__DAGS_FOLDER</span>=/home/ubuntu/compliance-pipeline/airflow/dags
+ExecStart=/home/ubuntu/compliance-pipeline/venv/bin/airflow scheduler
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Start and enable both</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">sudo systemctl daemon-reload</span>
+<span class="cmd">sudo systemctl start</span> airflow-webserver airflow-scheduler
+<span class="cmd">sudo systemctl enable</span> airflow-webserver airflow-scheduler
+
+<span class="cmt"># Check status</span>
+<span class="cmd">sudo systemctl status</span> airflow-webserver
+<span class="cmd">sudo systemctl status</span> airflow-scheduler
+
+<span class="cmt"># Access Airflow UI at: http://YOUR_EC2_IP:8080</span>
+<span class="cmt"># Login: admin / AdminPass123!</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 09 API ═══════════════════════════════ -->
+<div class="page" id="pg-api">
+  <div class="page-header">
+    <div class="page-eyebrow">Step 09</div>
+    <div class="page-title">FastAPI Setup</div>
+    <div class="page-sub">On the second EC2 (t3.small). Runs behind nginx. Connects to ClickHouse and Redis.</div>
+  </div>
+
+  <div class="step open">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">9.1</div>
+      <div class="step-info"><div class="step-title">Launch second EC2 for FastAPI</div><div class="step-sub">t3.small — same region, same VPC as main EC2</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">aws ec2 run-instances</span> \
+  <span class="flag">--image-id</span> ami-0f58b397bc5c1f2e8 \
+  <span class="flag">--instance-type</span> t3.small \
+  <span class="flag">--key-name</span> compliance-pilot-key \
+  <span class="flag">--security-group-ids</span> sg-XXXXXXXX \
+  <span class="flag">--block-device-mappings</span> <span class="str">'[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":20,"VolumeType":"gp3"}}]'</span> \
+  <span class="flag">--tag-specifications</span> <span class="str">'ResourceType=instance,Tags=[{Key=Name,Value=compliance-api}]'</span>
+
+<span class="cmt"># Open port 80 (nginx) and 8000 (FastAPI direct for testing)</span>
+<span class="cmd">aws ec2 authorize-security-group-ingress</span> \
+  <span class="flag">--group-id</span> sg-XXXXXXXX <span class="flag">--protocol</span> tcp <span class="flag">--port</span> 80 <span class="flag">--cidr</span> 0.0.0.0/0
+<span class="cmd">aws ec2 authorize-security-group-ingress</span> \
+  <span class="flag">--group-id</span> sg-XXXXXXXX <span class="flag">--protocol</span> tcp <span class="flag">--port</span> 8000 <span class="flag">--cidr</span> 0.0.0.0/0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">9.2</div>
+      <div class="step-info"><div class="step-title">Install + run FastAPI with uvicorn</div><div class="step-sub">Inside the API EC2</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Inside API EC2</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">cd</span> /home/ubuntu/compliance-pipeline
+
+<span class="cmd">pip install</span> fastapi uvicorn redis clickhouse-driver python-dotenv python-jose
+
+<span class="cmt"># Test run first — this shows errors if any import is broken</span>
+<span class="cmd">uvicorn api.main:app</span> <span class="flag">--host</span> 0.0.0.0 <span class="flag">--port</span> 8000 <span class="flag">--reload</span>
+
+<span class="cmt"># If no errors, visit: http://API_EC2_IP:8000/docs</span>
+<span class="cmt"># You should see Swagger UI with all your endpoints</span>
+<span class="cmt"># Ctrl+C to stop after verifying</span></div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Run as systemd service</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">sudo nano</span> /etc/systemd/system/compliance-api.service
+
+[Unit]
+Description=Compliance FastAPI
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/compliance-pipeline
+EnvironmentFile=/home/ubuntu/compliance-pipeline/.env
+ExecStart=/home/ubuntu/compliance-pipeline/venv/bin/uvicorn api.main:app \
+  <span class="flag">--host</span> 0.0.0.0 <span class="flag">--port</span> 8000 <span class="flag">--workers</span> 2
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+<span class="cmd">sudo systemctl daemon-reload</span>
+<span class="cmd">sudo systemctl start</span> compliance-api
+<span class="cmd">sudo systemctl enable</span> compliance-api
+<span class="cmd">sudo systemctl status</span> compliance-api</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 10 TEST ═══════════════════════════════ -->
+<div class="page" id="pg-test">
+  <div class="page-header">
+    <div class="page-eyebrow">Step 10</div>
+    <div class="page-title">Test Everything</div>
+    <div class="page-sub">Exact commands to verify each component is working. Run in this order.</div>
+  </div>
+
+  <div class="step open">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">10.1</div>
+      <div class="step-info"><div class="step-title">Test PostgreSQL connection</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Inside EC2</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">python3</span> <span class="flag">-c</span> <span class="str">"
+import psycopg2, os
+from dotenv import load_dotenv
+load_dotenv()
+conn = psycopg2.connect(
+  host=os.getenv('PG_HOST'),
+  user=os.getenv('PG_USER'),
+  password=os.getenv('PG_PASSWORD'),
+  dbname=os.getenv('PG_DATABASE')
+)
+print('PostgreSQL connected OK')
+conn.close()
+"</span>
+<span class="cmt"># Expected output: PostgreSQL connected OK</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">10.2</div>
+      <div class="step-info"><div class="step-title">Test ClickHouse connection</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">python3</span> <span class="flag">-c</span> <span class="str">"
+from clickhouse_driver import Client
+client = Client(host='localhost', database='compliance')
+result = client.execute('SELECT count() FROM loans_raw')
+print('ClickHouse OK. loans_raw row count:', result[0][0])
+"</span>
+<span class="cmt"># Expected: ClickHouse OK. loans_raw row count: 0  (empty until ingestion runs)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">10.3</div>
+      <div class="step-info"><div class="step-title">Run one ingestor manually</div><div class="step-sub">Upload a test CSV to S3 first, then run</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmd">cd</span> /home/ubuntu/compliance-pipeline
+<span class="cmd">source</span> venv/bin/activate
+
+<span class="cmt"># Run loan ingestor directly (before hooking into Airflow)</span>
+<span class="cmd">python3</span> <span class="flag">-c</span> <span class="str">"
+from ingestion.loan_ingestor import LoanIngestor
+ingestor = LoanIngestor(
+  csv_path='s3://compliance-pilot-data/loans/loans_test.csv'
+)
+result = ingestor.run()
+print('Result:', result)
+"</span>
+<span class="cmt"># Expected: Result: WriteResult(rows_written=100, rows_skipped=0, status='success')</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">10.4</div>
+      <div class="step-info"><div class="step-title">Trigger an Airflow DAG manually</div><div class="step-sub">Test without waiting for schedule</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># List all DAGs — verify yours appear</span>
+<span class="cmd">airflow dags list</span>
+
+<span class="cmt"># Trigger loans DAG manually for today</span>
+<span class="cmd">airflow dags trigger</span> etl_loans_pg_to_bronze
+
+<span class="cmt"># Watch the run</span>
+<span class="cmd">airflow dags list-runs</span> <span class="flag">--dag-id</span> etl_loans_pg_to_bronze
+
+<span class="cmt"># Check individual task logs</span>
+<span class="cmd">airflow tasks logs</span> etl_loans_pg_to_bronze extract_from_postgres <span class="val">RUN_ID</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">10.5</div>
+      <div class="step-info"><div class="step-title">Test FastAPI endpoints</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># From your local machine — replace with API EC2 IP</span>
+<span class="cmd">curl</span> http://<span class="val">API_EC2_IP</span>:8000/health
+<span class="cmt"># Expected: {"status":"ok"}</span>
+
+<span class="cmd">curl</span> http://<span class="val">API_EC2_IP</span>:8000/docs
+<span class="cmt"># Open in browser — Swagger UI should load</span>
+
+<span class="cmt"># Test an agent endpoint (with auth token)</span>
+<span class="cmd">curl</span> <span class="flag">-H</span> <span class="str">"Authorization: Bearer YOUR_TOKEN"</span> \
+  http://<span class="val">API_EC2_IP</span>:8000/agent/assigned-loans</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ 11 DEBUG ═══════════════════════════════ -->
+<div class="page" id="pg-debug">
+  <div class="page-header">
+    <div class="page-eyebrow">Step 11</div>
+    <div class="page-title">Common Errors + Fixes</div>
+    <div class="page-sub">Most likely errors you'll hit since code is untested. Exact fix for each.</div>
+  </div>
+
+  <div class="step open">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">ERR 1</div>
+      <div class="step-info"><div class="step-title">ModuleNotFoundError: No module named 'dags_helper'</div><div class="step-sub">Airflow can't find dags_helper.py</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="info-box error"><strong>Cause</strong>dags_helper.py is not inside the /dags directory, OR Airflow is pointed to wrong dags folder.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Fix</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># Verify dags folder path</span>
+<span class="cmd">airflow config get-value</span> core dags_folder
+<span class="cmt"># Should print: /home/ubuntu/compliance-pipeline/airflow/dags</span>
+
+<span class="cmt"># Verify dags_helper.py is IN that folder</span>
+<span class="cmd">ls</span> /home/ubuntu/compliance-pipeline/airflow/dags/dags_helper.py
+
+<span class="cmt"># If it's outside /dags, move it</span>
+<span class="cmd">mv</span> dags_helper.py /home/ubuntu/compliance-pipeline/airflow/dags/</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">ERR 2</div>
+      <div class="step-info"><div class="step-title">could not connect to server: Connection refused (PostgreSQL)</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="info-box error"><strong>Cause</strong>EC2 security group doesn't allow port 5432, OR RDS security group source group is wrong.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Debug steps</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># From EC2 — test if port is reachable</span>
+<span class="cmd">nc</span> <span class="flag">-zv</span> YOUR_RDS_ENDPOINT 5432
+<span class="cmt"># "Connection refused" = security group issue</span>
+<span class="cmt"># "Connected" = credentials wrong, not network</span>
+
+<span class="cmt"># Fix: Make sure RDS security group allows source = EC2 security group ID</span>
+<span class="cmt"># NOT your IP — use the sg-XXXX of EC2</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">ERR 3</div>
+      <div class="step-info"><div class="step-title">Airflow DAG not showing in UI</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="info-box error"><strong>Cause</strong>Syntax error in DAG file, OR import error in dags_helper.py — Airflow silently skips broken DAGs.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># Check for import errors in your DAG file directly</span>
+<span class="cmd">python3</span> /home/ubuntu/compliance-pipeline/airflow/dags/dag_loans.py
+<span class="cmt"># Any error printed here = Airflow is swallowing it silently</span>
+
+<span class="cmt"># Also check Airflow import errors</span>
+<span class="cmd">airflow dags list-import-errors</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">ERR 4</div>
+      <div class="step-info"><div class="step-title">FastAPI: ImportError on startup</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="info-box error"><strong>Cause</strong>A package in your code is not installed in the venv, OR relative import path is wrong.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># Run this — it shows the exact error and line</span>
+<span class="cmd">cd</span> /home/ubuntu/compliance-pipeline
+<span class="cmd">python3</span> <span class="flag">-m</span> api.main
+<span class="cmt"># Or: python3 -c "import api.main"</span>
+
+<span class="cmt"># If "No module named X"</span>
+<span class="cmd">pip install X</span>
+
+<span class="cmt"># If relative import error (from ..config import ...)</span>
+<span class="cmt"># Run uvicorn from project root always, never from inside api/ folder</span>
+<span class="cmd">cd</span> /home/ubuntu/compliance-pipeline
+<span class="cmd">uvicorn api.main:app</span> <span class="flag">--reload</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">ERR 5</div>
+      <div class="step-info"><div class="step-title">ClickHouse: Code: 60. Table doesn't exist</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># List all tables in compliance database</span>
+<span class="cmd">clickhouse-client</span> <span class="flag">--query</span> <span class="str">"SHOW TABLES FROM compliance"</span>
+
+<span class="cmt"># If table missing, your SQL file had an error — check it</span>
+<span class="cmd">clickhouse-client</span> <span class="flag">--database</span> compliance \
+  <span class="flag">--queries-file</span> /home/ubuntu/compliance-pipeline/transforms/bronze_tables.sql
+
+<span class="cmt"># ClickHouse prints exact line number of SQL error</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-header" onclick="tog(this)">
+      <div class="step-num">LOGS</div>
+      <div class="step-info"><div class="step-title">Where to find all logs</div><div class="step-sub">When something fails silently</div></div>
+      <span class="step-chevron">▼</span>
+    </div>
+    <div class="step-body">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="cp(this)">copy</button></div>
+        <div class="code-body"><span class="cmt"># Airflow scheduler log (most useful)</span>
+<span class="cmd">sudo journalctl</span> <span class="flag">-u</span> airflow-scheduler <span class="flag">-f</span>
+
+<span class="cmt"># Airflow webserver log</span>
+<span class="cmd">sudo journalctl</span> <span class="flag">-u</span> airflow-webserver <span class="flag">-f</span>
+
+<span class="cmt"># FastAPI log</span>
+<span class="cmd">sudo journalctl</span> <span class="flag">-u</span> compliance-api <span class="flag">-f</span>
+
+<span class="cmt"># ClickHouse log</span>
+<span class="cmd">sudo tail</span> <span class="flag">-f</span> /var/log/clickhouse-server/clickhouse-server.log
+
+<span class="cmt"># Airflow task-specific log (get from UI or CLI)</span>
+<span class="cmd">airflow tasks logs</span> DAG_ID TASK_ID RUN_ID</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- end pages -->
+
+</main>
+
+<script>
+function go(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('pg-' + name).classList.add('active');
+  btn.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+function tog(header) {
+  const step = header.parentElement;
+  step.classList.toggle('open');
+}
+
+function cp(btn) {
+  const code = btn.closest('.code-block').querySelector('.code-body').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'copied!';
+    btn.style.color = '#3fb950';
+    setTimeout(() => { btn.textContent = 'copy'; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>

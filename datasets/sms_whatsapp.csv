@@ -1,0 +1,101 @@
+message_id,customer_id,channel,message_text,sent_time,delivered_time,read_time,status
+MSG_20250118_001,CUST_10005,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-01-18T00:09:35Z,2025-01-18T00:10:57Z,,delivered
+MSG_20250206_002,CUST_10020,whatsapp,Thank you for your payment. Next EMI due: {date}.,2025-02-06T05:37:36Z,2025-02-06T05:39:32Z,,delivered
+MSG_20250210_003,CUST_10031,whatsapp,Auto-debit failed. Please pay manually or update bank details.,2025-02-10T16:19:01Z,2025-02-10T16:20:41Z,,delivered
+MSG_20250204_004,CUST_10050,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-02-04T18:09:34Z,,,pending
+MSG_20250121_005,CUST_10020,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-01-21T11:15:10Z,,,failed
+MSG_20250124_006,CUST_10047,whatsapp,Thank you for your payment. Next EMI due: {date}.,2025-01-24T18:03:58Z,,,failed
+MSG_20250129_007,CUST_10003,sms,"Dear customer, your loan payment is pending. Contact us for assistance.",2025-01-29T09:05:51Z,2025-01-29T09:06:36Z,,delivered
+MSG_20250215_008,CUST_10038,sms,URGENT: Your account is overdue by {days} days. Pay immediately.,2025-02-15T14:06:09Z,,,pending
+MSG_20250208_009,CUST_10015,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-02-08T23:25:41Z,2025-02-08T23:26:11Z,,delivered
+MSG_20250120_010,CUST_10022,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-01-20T15:27:18Z,,,pending
+MSG_20250125_011,CUST_10023,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-01-25T00:05:44Z,2025-01-25T00:06:10Z,,delivered
+MSG_20250207_012,CUST_10042,whatsapp,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-02-07T10:34:08Z,2025-02-07T10:36:06Z,2025-02-07T11:50:37Z,read
+MSG_20250214_013,CUST_10027,whatsapp,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-02-14T00:28:36Z,2025-02-14T00:30:18Z,,delivered
+MSG_20250209_014,CUST_10033,whatsapp,Your EMI is overdue. Pay now to avoid penalties.,2025-02-09T01:02:16Z,,,failed
+MSG_20250117_015,CUST_10040,whatsapp,Your EMI is overdue. Pay now to avoid penalties.,2025-01-17T09:10:12Z,,,pending
+MSG_20250216_016,CUST_10027,whatsapp,URGENT: Your account is overdue by {days} days. Pay immediately.,2025-02-16T01:17:46Z,2025-02-16T01:18:59Z,2025-02-16T02:34:48Z,read
+MSG_20250121_017,CUST_10033,sms,"Dear customer, your loan payment is pending. Contact us for assistance.",2025-01-21T08:49:12Z,,,pending
+MSG_20250211_018,CUST_10010,whatsapp,URGENT: Your account is overdue by {days} days. Pay immediately.,2025-02-11T04:19:01Z,2025-02-11T04:19:18Z,,delivered
+MSG_20250130_019,CUST_10026,whatsapp,Auto-debit failed. Please pay manually or update bank details.,2025-01-30T04:02:47Z,,,failed
+MSG_20250125_020,CUST_10045,whatsapp,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-01-25T02:13:44Z,,,failed
+MSG_20250214_021,CUST_10025,whatsapp,Your EMI is overdue. Pay now to avoid penalties.,2025-02-14T20:05:06Z,,,pending
+MSG_20250215_022,CUST_10006,whatsapp,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-02-15T21:59:24Z,,,pending
+MSG_20250119_023,CUST_10034,whatsapp,Thank you for your payment. Next EMI due: {date}.,2025-01-19T21:43:46Z,2025-01-19T21:45:40Z,,delivered
+MSG_20250119_024,CUST_10003,whatsapp,Your EMI is overdue. Pay now to avoid penalties.,2025-01-19T20:38:55Z,,,failed
+MSG_20250207_025,CUST_10002,whatsapp,Auto-debit failed. Please pay manually or update bank details.,2025-02-07T16:02:13Z,2025-02-07T16:04:06Z,,delivered
+MSG_20250212_026,CUST_10037,whatsapp,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-02-12T15:21:41Z,,,pending
+MSG_20250128_027,CUST_10009,sms,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-01-28T17:47:13Z,2025-01-28T17:48:54Z,2025-01-28T19:30:23Z,read
+MSG_20250213_028,CUST_10015,whatsapp,Auto-debit failed. Please pay manually or update bank details.,2025-02-13T18:26:21Z,,,failed
+MSG_20250131_029,CUST_10018,whatsapp,Thank you for your payment. Next EMI due: {date}.,2025-01-31T12:44:38Z,,,pending
+MSG_20250130_030,CUST_10028,whatsapp,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-01-30T02:27:00Z,,,pending
+MSG_20250202_031,CUST_10046,whatsapp,URGENT: Your account is overdue by {days} days. Pay immediately.,2025-02-02T00:51:29Z,2025-02-02T00:53:16Z,2025-02-02T01:27:24Z,read
+MSG_20250208_032,CUST_10041,whatsapp,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-02-08T21:19:11Z,,,pending
+MSG_20250129_033,CUST_10001,whatsapp,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-01-29T20:45:14Z,,,pending
+MSG_20250203_034,CUST_10006,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-02-03T06:41:58Z,,,pending
+MSG_20250120_035,CUST_10027,whatsapp,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-01-20T08:03:56Z,2025-01-20T08:05:12Z,2025-01-20T09:15:39Z,read
+MSG_20250130_036,CUST_10039,sms,Auto-debit failed. Please pay manually or update bank details.,2025-01-30T04:39:36Z,,,failed
+MSG_20250215_037,CUST_10025,whatsapp,"Dear customer, your loan payment is pending. Contact us for assistance.",2025-02-15T18:37:20Z,2025-02-15T18:38:02Z,,delivered
+MSG_20250128_038,CUST_10018,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-01-28T21:24:55Z,,,failed
+MSG_20250209_039,CUST_10028,whatsapp,URGENT: Your account is overdue by {days} days. Pay immediately.,2025-02-09T06:58:25Z,,,pending
+MSG_20250123_040,CUST_10024,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-01-23T20:49:47Z,2025-01-23T20:51:32Z,,delivered
+MSG_20250118_041,CUST_10030,whatsapp,URGENT: Your account is overdue by {days} days. Pay immediately.,2025-01-18T13:09:56Z,2025-01-18T13:11:19Z,,delivered
+MSG_20250216_042,CUST_10040,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-02-16T01:06:56Z,,,failed
+MSG_20250131_043,CUST_10042,sms,URGENT: Your account is overdue by {days} days. Pay immediately.,2025-01-31T03:00:15Z,2025-01-31T03:01:15Z,,delivered
+MSG_20250131_044,CUST_10013,whatsapp,"Dear customer, your loan payment is pending. Contact us for assistance.",2025-01-31T19:23:53Z,,,failed
+MSG_20250128_045,CUST_10048,sms,Thank you for your payment. Next EMI due: {date}.,2025-01-28T01:01:03Z,,,pending
+MSG_20250131_046,CUST_10026,whatsapp,Thank you for your payment. Next EMI due: {date}.,2025-01-31T13:18:55Z,2025-01-31T13:19:48Z,2025-01-31T13:58:34Z,read
+MSG_20250118_047,CUST_10044,sms,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-01-18T15:00:20Z,2025-01-18T15:01:34Z,2025-01-18T15:26:37Z,read
+MSG_20250206_048,CUST_10019,sms,Auto-debit failed. Please pay manually or update bank details.,2025-02-06T04:44:31Z,2025-02-06T04:45:32Z,2025-02-06T06:34:56Z,read
+MSG_20250123_049,CUST_10020,whatsapp,"Dear customer, your loan payment is pending. Contact us for assistance.",2025-01-23T03:16:11Z,,,failed
+MSG_20250126_050,CUST_10005,whatsapp,Auto-debit failed. Please pay manually or update bank details.,2025-01-26T20:01:13Z,,,pending
+MSG_20250121_051,CUST_10045,whatsapp,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-01-21T10:25:01Z,2025-01-21T10:26:10Z,2025-01-21T12:25:24Z,read
+MSG_20250121_052,CUST_10006,whatsapp,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-01-21T07:27:34Z,2025-01-21T07:28:55Z,,delivered
+MSG_20250208_053,CUST_10003,sms,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-02-08T07:12:06Z,,,pending
+MSG_20250126_054,CUST_10007,whatsapp,Thank you for your payment. Next EMI due: {date}.,2025-01-26T11:28:59Z,2025-01-26T11:29:17Z,,delivered
+MSG_20250125_055,CUST_10030,sms,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-01-25T17:37:50Z,2025-01-25T17:38:42Z,,delivered
+MSG_20250215_056,CUST_10019,whatsapp,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-02-15T04:22:57Z,2025-02-15T04:24:03Z,2025-02-15T04:38:49Z,read
+MSG_20250209_057,CUST_10022,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-02-09T11:56:12Z,2025-02-09T11:57:01Z,,delivered
+MSG_20250130_058,CUST_10029,sms,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-01-30T11:12:03Z,,,pending
+MSG_20250213_059,CUST_10046,whatsapp,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-02-13T02:44:11Z,2025-02-13T02:44:54Z,2025-02-13T02:51:30Z,read
+MSG_20250211_060,CUST_10011,sms,"Dear customer, your loan payment is pending. Contact us for assistance.",2025-02-11T01:35:00Z,2025-02-11T01:36:31Z,,delivered
+MSG_20250120_061,CUST_10036,whatsapp,Thank you for your payment. Next EMI due: {date}.,2025-01-20T13:58:41Z,,,pending
+MSG_20250127_062,CUST_10012,sms,Auto-debit failed. Please pay manually or update bank details.,2025-01-27T17:05:08Z,,,pending
+MSG_20250214_063,CUST_10013,whatsapp,Auto-debit failed. Please pay manually or update bank details.,2025-02-14T22:59:19Z,,,pending
+MSG_20250216_064,CUST_10014,whatsapp,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-02-16T03:48:56Z,2025-02-16T03:50:31Z,2025-02-16T04:20:20Z,read
+MSG_20250121_065,CUST_10021,whatsapp,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-01-21T07:28:45Z,,,pending
+MSG_20250203_066,CUST_10032,sms,Auto-debit failed. Please pay manually or update bank details.,2025-02-03T15:20:11Z,,,failed
+MSG_20250117_067,CUST_10008,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-01-17T16:46:27Z,,,failed
+MSG_20250117_068,CUST_10044,sms,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-01-17T09:43:14Z,,,failed
+MSG_20250209_069,CUST_10016,whatsapp,"Dear customer, your loan payment is pending. Contact us for assistance.",2025-02-09T20:56:23Z,2025-02-09T20:57:08Z,2025-02-09T21:13:43Z,read
+MSG_20250129_070,CUST_10033,whatsapp,"Dear customer, your loan payment is pending. Contact us for assistance.",2025-01-29T06:04:01Z,,,pending
+MSG_20250119_071,CUST_10012,whatsapp,"Dear customer, your loan payment is pending. Contact us for assistance.",2025-01-19T11:18:09Z,2025-01-19T11:19:03Z,,delivered
+MSG_20250123_072,CUST_10012,whatsapp,Your EMI is overdue. Pay now to avoid penalties.,2025-01-23T14:31:33Z,,,pending
+MSG_20250129_073,CUST_10009,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-01-29T22:41:21Z,,,pending
+MSG_20250127_074,CUST_10027,sms,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-01-27T12:19:27Z,,,pending
+MSG_20250208_075,CUST_10002,whatsapp,Your EMI is overdue. Pay now to avoid penalties.,2025-02-08T06:08:09Z,,,failed
+MSG_20250203_076,CUST_10019,whatsapp,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-02-03T00:46:24Z,,,pending
+MSG_20250120_077,CUST_10037,whatsapp,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-01-20T16:31:22Z,,,failed
+MSG_20250121_078,CUST_10003,sms,Thank you for your payment. Next EMI due: {date}.,2025-01-21T01:28:26Z,,,pending
+MSG_20250126_079,CUST_10042,whatsapp,Your EMI is overdue. Pay now to avoid penalties.,2025-01-26T17:39:32Z,,,failed
+MSG_20250125_080,CUST_10006,whatsapp,Thank you for your payment. Next EMI due: {date}.,2025-01-25T13:01:26Z,2025-01-25T13:02:04Z,2025-01-25T13:50:09Z,read
+MSG_20250206_081,CUST_10038,sms,Auto-debit failed. Please pay manually or update bank details.,2025-02-06T04:28:28Z,,,failed
+MSG_20250208_082,CUST_10014,whatsapp,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-02-08T07:37:03Z,2025-02-08T07:38:26Z,2025-02-08T07:57:56Z,read
+MSG_20250121_083,CUST_10035,whatsapp,URGENT: Your account is overdue by {days} days. Pay immediately.,2025-01-21T12:50:53Z,,,failed
+MSG_20250202_084,CUST_10033,sms,"Dear customer, your loan payment is pending. Contact us for assistance.",2025-02-02T07:54:09Z,2025-02-02T07:55:27Z,2025-02-02T08:32:27Z,read
+MSG_20250127_085,CUST_10042,whatsapp,Thank you for your payment. Next EMI due: {date}.,2025-01-27T09:27:21Z,2025-01-27T09:27:33Z,,delivered
+MSG_20250209_086,CUST_10016,sms,Your payment plan has been updated. New EMI: Rs. {amount}.,2025-02-09T06:36:51Z,,,pending
+MSG_20250209_087,CUST_10018,sms,Auto-debit failed. Please pay manually or update bank details.,2025-02-09T11:21:29Z,,,pending
+MSG_20250125_088,CUST_10050,whatsapp,URGENT: Your account is overdue by {days} days. Pay immediately.,2025-01-25T10:23:30Z,,,pending
+MSG_20250129_089,CUST_10021,sms,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-01-29T11:00:04Z,2025-01-29T11:01:07Z,2025-01-29T12:08:15Z,read
+MSG_20250125_090,CUST_10045,whatsapp,Auto-debit failed. Please pay manually or update bank details.,2025-01-25T02:52:05Z,2025-01-25T02:53:31Z,2025-01-25T04:24:41Z,read
+MSG_20250205_091,CUST_10014,whatsapp,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-02-05T19:12:36Z,,,failed
+MSG_20250202_092,CUST_10037,whatsapp,Settlement offer: Pay Rs. {amount} to close your loan. Valid till {date}.,2025-02-02T14:35:25Z,,,pending
+MSG_20250214_093,CUST_10041,whatsapp,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-02-14T00:35:57Z,2025-02-14T00:36:07Z,2025-02-14T00:50:12Z,read
+MSG_20250208_094,CUST_10001,whatsapp,"Dear customer, your loan payment is pending. Contact us for assistance.",2025-02-08T16:56:10Z,2025-02-08T16:57:11Z,,delivered
+MSG_20250201_095,CUST_10018,whatsapp,URGENT: Your account is overdue by {days} days. Pay immediately.,2025-02-01T17:18:05Z,,,failed
+MSG_20250212_096,CUST_10042,whatsapp,Auto-debit failed. Please pay manually or update bank details.,2025-02-12T08:58:24Z,2025-02-12T08:59:16Z,2025-02-12T10:30:29Z,read
+MSG_20250201_097,CUST_10049,whatsapp,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-02-01T13:03:22Z,,,pending
+MSG_20250211_098,CUST_10031,whatsapp,Thank you for your payment. Next EMI due: {date}.,2025-02-11T18:06:11Z,2025-02-11T18:06:16Z,,delivered
+MSG_20250122_099,CUST_10001,whatsapp,Reminder: EMI of Rs. {amount} due on {date}. Pay via UPI/NEFT.,2025-01-22T03:48:13Z,,,failed
+MSG_20250126_100,CUST_10031,whatsapp,Auto-debit failed. Please pay manually or update bank details.,2025-01-26T20:58:07Z,2025-01-26T20:59:40Z,,delivered

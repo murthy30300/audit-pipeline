@@ -1,0 +1,101 @@
+tts_id,customer_id,message_text,language,delivery_time,status
+TTS_20250211_001,CUST_10032,Your payment of Rs. {amount} has been received. Thank you.,tamil,2025-02-11T13:37:54Z,pending
+TTS_20250214_002,CUST_10045,Thank you for your recent payment. Your next EMI is due on {date}.,telugu,2025-02-14T18:52:58Z,delivered
+TTS_20250125_003,CUST_10016,Reminder: EMI of Rs. {amount} is due on {date}.,marathi,2025-01-25T18:53:31Z,delivered
+TTS_20250129_004,CUST_10035,Your payment is due tomorrow. Please pay to avoid late charges.,telugu,2025-01-29T13:01:26Z,delivered
+TTS_20250202_005,CUST_10013,Reminder: Last date for payment without penalty is {date}.,hindi,2025-02-02T23:34:30Z,delivered
+TTS_20250206_006,CUST_10042,Your payment is due tomorrow. Please pay to avoid late charges.,hindi,2025-02-06T01:52:44Z,pending
+TTS_20250131_007,CUST_10016,Thank you for your recent payment. Your next EMI is due on {date}.,hindi,2025-01-31T04:26:02Z,delivered
+TTS_20250120_008,CUST_10014,Thank you for your recent payment. Your next EMI is due on {date}.,bengali,2025-01-20T11:18:05Z,pending
+TTS_20250205_009,CUST_10022,Your payment is due tomorrow. Please pay to avoid late charges.,tamil,2025-02-05T01:32:13Z,delivered
+TTS_20250209_010,CUST_10009,Important: Your auto-debit has failed. Please ensure sufficient balance.,bengali,2025-02-09T08:25:35Z,pending
+TTS_20250207_011,CUST_10008,Your loan account has an overdue balance. Please pay immediately.,hindi,2025-02-07T21:41:47Z,delivered
+TTS_20250129_012,CUST_10016,"Dear customer, a settlement offer is available for your loan.",hindi,2025-01-29T23:37:03Z,pending
+TTS_20250207_013,CUST_10017,Your loan account has an overdue balance. Please pay immediately.,marathi,2025-02-07T21:59:19Z,delivered
+TTS_20250126_014,CUST_10034,Reminder: EMI of Rs. {amount} is due on {date}.,telugu,2025-01-26T22:32:44Z,delivered
+TTS_20250125_015,CUST_10050,Reminder: EMI of Rs. {amount} is due on {date}.,telugu,2025-01-25T14:43:18Z,delivered
+TTS_20250122_016,CUST_10015,Your payment is due tomorrow. Please pay to avoid late charges.,marathi,2025-01-22T21:59:08Z,pending
+TTS_20250122_017,CUST_10020,Your payment is due tomorrow. Please pay to avoid late charges.,hindi,2025-01-22T01:27:56Z,failed
+TTS_20250124_018,CUST_10026,Reminder: EMI of Rs. {amount} is due on {date}.,telugu,2025-01-24T02:56:45Z,failed
+TTS_20250125_019,CUST_10005,"Dear customer, a settlement offer is available for your loan.",kannada,2025-01-25T20:12:45Z,delivered
+TTS_20250209_020,CUST_10005,Important: Your auto-debit has failed. Please ensure sufficient balance.,kannada,2025-02-09T04:10:43Z,delivered
+TTS_20250118_021,CUST_10036,Your payment of Rs. {amount} has been received. Thank you.,kannada,2025-01-18T23:00:03Z,delivered
+TTS_20250121_022,CUST_10019,Your payment of Rs. {amount} has been received. Thank you.,hindi,2025-01-21T14:51:24Z,failed
+TTS_20250210_023,CUST_10042,Thank you for your recent payment. Your next EMI is due on {date}.,telugu,2025-02-10T19:41:53Z,pending
+TTS_20250125_024,CUST_10015,"Dear customer, a settlement offer is available for your loan.",bengali,2025-01-25T10:54:02Z,failed
+TTS_20250125_025,CUST_10026,Reminder: EMI of Rs. {amount} is due on {date}.,tamil,2025-01-25T08:38:08Z,failed
+TTS_20250126_026,CUST_10021,"Dear customer, a settlement offer is available for your loan.",english,2025-01-26T15:47:03Z,delivered
+TTS_20250124_027,CUST_10005,Reminder: EMI of Rs. {amount} is due on {date}.,hindi,2025-01-24T08:26:17Z,delivered
+TTS_20250126_028,CUST_10007,Your loan account has an overdue balance. Please pay immediately.,kannada,2025-01-26T09:49:39Z,delivered
+TTS_20250213_029,CUST_10038,"Dear customer, a settlement offer is available for your loan.",marathi,2025-02-13T11:07:02Z,pending
+TTS_20250210_030,CUST_10027,Your payment of Rs. {amount} has been received. Thank you.,bengali,2025-02-10T10:35:25Z,delivered
+TTS_20250213_031,CUST_10019,Important: Your auto-debit has failed. Please ensure sufficient balance.,tamil,2025-02-13T21:03:40Z,pending
+TTS_20250211_032,CUST_10037,Thank you for your recent payment. Your next EMI is due on {date}.,english,2025-02-11T08:17:48Z,pending
+TTS_20250123_033,CUST_10015,"Dear customer, a settlement offer is available for your loan.",bengali,2025-01-23T23:12:32Z,delivered
+TTS_20250120_034,CUST_10024,Important: Your auto-debit has failed. Please ensure sufficient balance.,kannada,2025-01-20T08:54:14Z,delivered
+TTS_20250205_035,CUST_10028,Your payment is due tomorrow. Please pay to avoid late charges.,kannada,2025-02-05T09:30:21Z,pending
+TTS_20250203_036,CUST_10002,Important: Your auto-debit has failed. Please ensure sufficient balance.,marathi,2025-02-03T09:24:03Z,delivered
+TTS_20250201_037,CUST_10022,Your payment is due tomorrow. Please pay to avoid late charges.,english,2025-02-01T09:00:25Z,delivered
+TTS_20250209_038,CUST_10037,Reminder: EMI of Rs. {amount} is due on {date}.,english,2025-02-09T10:06:00Z,failed
+TTS_20250214_039,CUST_10006,Thank you for your recent payment. Your next EMI is due on {date}.,telugu,2025-02-14T21:16:55Z,pending
+TTS_20250126_040,CUST_10030,Your loan account has an overdue balance. Please pay immediately.,tamil,2025-01-26T23:51:35Z,delivered
+TTS_20250201_041,CUST_10047,Reminder: EMI of Rs. {amount} is due on {date}.,hindi,2025-02-01T05:54:59Z,delivered
+TTS_20250208_042,CUST_10011,Your payment is due tomorrow. Please pay to avoid late charges.,marathi,2025-02-08T19:44:11Z,pending
+TTS_20250212_043,CUST_10018,Your payment of Rs. {amount} has been received. Thank you.,telugu,2025-02-12T09:57:03Z,failed
+TTS_20250117_044,CUST_10029,Important: Your auto-debit has failed. Please ensure sufficient balance.,english,2025-01-17T21:42:19Z,failed
+TTS_20250122_045,CUST_10008,Your payment of Rs. {amount} has been received. Thank you.,hindi,2025-01-22T12:04:24Z,delivered
+TTS_20250202_046,CUST_10044,Reminder: Last date for payment without penalty is {date}.,kannada,2025-02-02T14:59:39Z,pending
+TTS_20250201_047,CUST_10003,Your payment of Rs. {amount} has been received. Thank you.,kannada,2025-02-01T09:39:56Z,delivered
+TTS_20250213_048,CUST_10001,Important: Your auto-debit has failed. Please ensure sufficient balance.,english,2025-02-13T17:10:28Z,delivered
+TTS_20250209_049,CUST_10049,Important: Your auto-debit has failed. Please ensure sufficient balance.,tamil,2025-02-09T17:06:36Z,delivered
+TTS_20250210_050,CUST_10001,Your payment of Rs. {amount} has been received. Thank you.,english,2025-02-10T13:12:30Z,failed
+TTS_20250210_051,CUST_10025,Thank you for your recent payment. Your next EMI is due on {date}.,kannada,2025-02-10T02:29:16Z,pending
+TTS_20250120_052,CUST_10043,Reminder: EMI of Rs. {amount} is due on {date}.,telugu,2025-01-20T06:02:24Z,delivered
+TTS_20250214_053,CUST_10028,Reminder: Last date for payment without penalty is {date}.,hindi,2025-02-14T07:42:52Z,delivered
+TTS_20250201_054,CUST_10037,Your payment of Rs. {amount} has been received. Thank you.,marathi,2025-02-01T04:15:29Z,failed
+TTS_20250127_055,CUST_10019,Your payment of Rs. {amount} has been received. Thank you.,hindi,2025-01-27T02:21:05Z,delivered
+TTS_20250131_056,CUST_10011,Reminder: Last date for payment without penalty is {date}.,bengali,2025-01-31T14:37:04Z,pending
+TTS_20250129_057,CUST_10006,Reminder: EMI of Rs. {amount} is due on {date}.,english,2025-01-29T19:24:40Z,failed
+TTS_20250126_058,CUST_10038,Reminder: EMI of Rs. {amount} is due on {date}.,telugu,2025-01-26T05:24:01Z,failed
+TTS_20250201_059,CUST_10048,Thank you for your recent payment. Your next EMI is due on {date}.,tamil,2025-02-01T07:30:15Z,delivered
+TTS_20250208_060,CUST_10005,Reminder: EMI of Rs. {amount} is due on {date}.,kannada,2025-02-08T05:06:41Z,pending
+TTS_20250122_061,CUST_10013,"Dear customer, a settlement offer is available for your loan.",marathi,2025-01-22T14:51:47Z,delivered
+TTS_20250209_062,CUST_10016,Your loan account has an overdue balance. Please pay immediately.,tamil,2025-02-09T04:55:44Z,delivered
+TTS_20250206_063,CUST_10012,Your loan account has an overdue balance. Please pay immediately.,bengali,2025-02-06T19:09:43Z,pending
+TTS_20250212_064,CUST_10012,Reminder: Last date for payment without penalty is {date}.,bengali,2025-02-12T17:12:26Z,failed
+TTS_20250120_065,CUST_10049,Reminder: Last date for payment without penalty is {date}.,marathi,2025-01-20T00:12:03Z,pending
+TTS_20250119_066,CUST_10042,"Dear customer, a settlement offer is available for your loan.",bengali,2025-01-19T23:19:10Z,pending
+TTS_20250201_067,CUST_10010,Reminder: EMI of Rs. {amount} is due on {date}.,telugu,2025-02-01T00:40:18Z,failed
+TTS_20250125_068,CUST_10041,Important: Your auto-debit has failed. Please ensure sufficient balance.,kannada,2025-01-25T21:47:25Z,delivered
+TTS_20250213_069,CUST_10023,Reminder: EMI of Rs. {amount} is due on {date}.,tamil,2025-02-13T15:33:18Z,pending
+TTS_20250124_070,CUST_10029,Your payment is due tomorrow. Please pay to avoid late charges.,tamil,2025-01-24T23:01:52Z,delivered
+TTS_20250202_071,CUST_10005,Your payment of Rs. {amount} has been received. Thank you.,telugu,2025-02-02T10:31:52Z,delivered
+TTS_20250119_072,CUST_10036,Reminder: Last date for payment without penalty is {date}.,bengali,2025-01-19T04:52:03Z,delivered
+TTS_20250119_073,CUST_10042,"Dear customer, a settlement offer is available for your loan.",kannada,2025-01-19T14:58:19Z,delivered
+TTS_20250124_074,CUST_10033,Your payment is due tomorrow. Please pay to avoid late charges.,telugu,2025-01-24T06:51:08Z,delivered
+TTS_20250211_075,CUST_10022,Your loan account has an overdue balance. Please pay immediately.,hindi,2025-02-11T08:24:42Z,delivered
+TTS_20250204_076,CUST_10046,Reminder: Last date for payment without penalty is {date}.,kannada,2025-02-04T08:21:28Z,failed
+TTS_20250121_077,CUST_10040,"Dear customer, a settlement offer is available for your loan.",tamil,2025-01-21T23:57:16Z,delivered
+TTS_20250202_078,CUST_10025,"Dear customer, a settlement offer is available for your loan.",marathi,2025-02-02T15:24:19Z,failed
+TTS_20250118_079,CUST_10004,Reminder: EMI of Rs. {amount} is due on {date}.,tamil,2025-01-18T08:24:45Z,delivered
+TTS_20250211_080,CUST_10036,Important: Your auto-debit has failed. Please ensure sufficient balance.,tamil,2025-02-11T18:53:34Z,failed
+TTS_20250118_081,CUST_10010,Reminder: EMI of Rs. {amount} is due on {date}.,kannada,2025-01-18T02:48:10Z,delivered
+TTS_20250209_082,CUST_10023,Your payment of Rs. {amount} has been received. Thank you.,english,2025-02-09T12:13:27Z,delivered
+TTS_20250118_083,CUST_10046,Important: Your auto-debit has failed. Please ensure sufficient balance.,kannada,2025-01-18T11:43:37Z,delivered
+TTS_20250129_084,CUST_10042,Your loan account has an overdue balance. Please pay immediately.,marathi,2025-01-29T02:08:13Z,delivered
+TTS_20250121_085,CUST_10006,"Dear customer, a settlement offer is available for your loan.",hindi,2025-01-21T19:42:27Z,failed
+TTS_20250129_086,CUST_10020,Thank you for your recent payment. Your next EMI is due on {date}.,tamil,2025-01-29T18:32:36Z,delivered
+TTS_20250123_087,CUST_10013,Your loan account has an overdue balance. Please pay immediately.,english,2025-01-23T18:27:12Z,delivered
+TTS_20250212_088,CUST_10019,Your payment is due tomorrow. Please pay to avoid late charges.,marathi,2025-02-12T15:05:47Z,delivered
+TTS_20250131_089,CUST_10050,Your loan account has an overdue balance. Please pay immediately.,kannada,2025-01-31T00:38:28Z,pending
+TTS_20250129_090,CUST_10010,Your loan account has an overdue balance. Please pay immediately.,bengali,2025-01-29T02:05:23Z,delivered
+TTS_20250208_091,CUST_10047,Your payment is due tomorrow. Please pay to avoid late charges.,telugu,2025-02-08T08:07:59Z,failed
+TTS_20250129_092,CUST_10044,Reminder: Last date for payment without penalty is {date}.,kannada,2025-01-29T16:33:38Z,delivered
+TTS_20250202_093,CUST_10049,Thank you for your recent payment. Your next EMI is due on {date}.,kannada,2025-02-02T13:02:06Z,failed
+TTS_20250204_094,CUST_10020,Thank you for your recent payment. Your next EMI is due on {date}.,tamil,2025-02-04T18:20:55Z,failed
+TTS_20250119_095,CUST_10029,Important: Your auto-debit has failed. Please ensure sufficient balance.,bengali,2025-01-19T16:24:48Z,failed
+TTS_20250128_096,CUST_10033,Your payment of Rs. {amount} has been received. Thank you.,english,2025-01-28T20:05:11Z,pending
+TTS_20250206_097,CUST_10039,Important: Your auto-debit has failed. Please ensure sufficient balance.,hindi,2025-02-06T16:20:08Z,delivered
+TTS_20250124_098,CUST_10024,Reminder: EMI of Rs. {amount} is due on {date}.,marathi,2025-01-24T01:04:17Z,pending
+TTS_20250122_099,CUST_10008,Reminder: EMI of Rs. {amount} is due on {date}.,bengali,2025-01-22T07:55:20Z,delivered
+TTS_20250208_100,CUST_10018,Your loan account has an overdue balance. Please pay immediately.,bengali,2025-02-08T14:13:22Z,failed

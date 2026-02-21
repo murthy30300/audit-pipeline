@@ -1,0 +1,101 @@
+call_id,customer_id,agent_id,call_start_time,call_end_time,duration_seconds,phone_number,transcript,asr_confidence,call_direction,call_status
+CALL_20250201_001,CUST_10013,AGT_503,2026-02-10 19:08:00,2026-02-10 19:13:28,328,+918051454923,"Hello sir, this is regarding your loan EMI payment which is overdue.",0.71,inbound,busy
+CALL_20250212_002,CUST_10027,AGT_515,2026-02-15 18:28:00,2026-02-15 18:36:17,497,+919098545541,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.87,inbound,no_answer
+CALL_20250127_003,CUST_10010,AGT_511,2026-02-03 07:07:00,2026-02-03 07:09:17,137,+917978815630,"Hi, this is regarding the bounce of your auto-debit. We need updated bank details.",0.7,outbound,no_answer
+CALL_20250205_004,CUST_10045,AGT_509,2026-01-21 21:44:00,2026-01-21 21:47:32,212,+918274350418,"Hi, we wanted to check if you received our SMS about the payment deadline.",0.71,outbound,completed
+CALL_20250125_005,CUST_10030,AGT_511,2026-02-03 07:53:00,2026-02-03 08:00:18,438,+919041322270,"Sir, we can offer a restructuring option for your loan. Would you like to discuss?",0.99,outbound,no_answer
+CALL_20250117_006,CUST_10047,AGT_515,2026-02-02 15:09:00,2026-02-02 15:17:20,500,+917344076115,"Sir, we can offer a restructuring option for your loan. Would you like to discuss?",0.82,inbound,completed
+CALL_20250124_007,CUST_10017,AGT_513,2026-02-16 07:19:00,2026-02-16 07:26:13,433,+917599707677,"Namaste, this call is about your outstanding loan balance.",0.94,outbound,busy
+CALL_20250123_008,CUST_10016,AGT_505,2026-01-23 21:50:00,2026-01-23 21:51:40,100,+918351531223,"Hi, we wanted to check if you received our SMS about the payment deadline.",0.72,outbound,completed
+CALL_20250203_009,CUST_10021,AGT_515,2026-01-23 12:13:00,2026-01-23 12:18:15,315,+919559321289,"Sir, we can offer a restructuring option for your loan. Would you like to discuss?",0.72,outbound,completed
+CALL_20250128_010,CUST_10010,AGT_512,2026-01-30 08:22:00,2026-01-30 08:29:56,476,+917978815630,"Namaste, this call is about your outstanding loan balance.",0.72,inbound,completed
+CALL_20250121_011,CUST_10027,AGT_501,2026-02-01 18:09:00,2026-02-01 18:14:02,302,+919098545541,"Namaste, this call is about your outstanding loan balance.",0.94,inbound,busy
+CALL_20250215_012,CUST_10037,AGT_507,2026-01-24 09:51:00,2026-01-24 09:55:01,241,+918748309234,"Hi, we wanted to check if you received our SMS about the payment deadline.",0.7,outbound,completed
+CALL_20250128_013,CUST_10027,AGT_509,2026-01-23 13:01:00,2026-01-23 13:05:03,243,+919098545541,"Hi, this is regarding the bounce of your auto-debit. We need updated bank details.",0.91,outbound,no_answer
+CALL_20250205_014,CUST_10028,AGT_508,2026-01-28 21:21:00,2026-01-28 21:29:01,481,+917248786714,"Hello sir, this is regarding your loan EMI payment which is overdue.",0.81,inbound,voicemail
+CALL_20250208_015,CUST_10030,AGT_515,2026-01-26 17:55:00,2026-01-26 18:00:14,314,+919041322270,"Hi, we noticed your EMI for this month has not been received yet.",0.98,outbound,no_answer
+CALL_20250118_016,CUST_10043,AGT_501,2026-02-12 09:50:00,2026-02-12 09:52:50,170,+917251837136,"Good morning, I am calling from the collections department about your pending dues.",0.89,outbound,no_answer
+CALL_20250207_017,CUST_10017,AGT_507,2026-02-08 20:02:00,2026-02-08 20:11:01,541,+917599707677,"Hello madam, I am following up on the payment reminder sent yesterday.",0.76,outbound,completed
+CALL_20250128_018,CUST_10049,AGT_514,2026-02-13 10:52:00,2026-02-13 11:00:51,531,+918800557283,"Good afternoon, this is a courtesy call regarding your loan account.",0.77,outbound,no_answer
+CALL_20250215_019,CUST_10035,AGT_501,2026-02-09 11:52:00,2026-02-09 11:56:53,293,+919208283728,"Hello madam, I am following up on the payment reminder sent yesterday.",0.77,outbound,voicemail
+CALL_20250214_020,CUST_10002,AGT_504,2026-02-13 07:42:00,2026-02-13 07:46:17,257,+917440213415,"Namaste, this call is about your outstanding loan balance.",0.94,outbound,completed
+CALL_20250210_021,CUST_10043,AGT_502,2026-02-08 12:17:00,2026-02-08 12:19:11,131,+917251837136,"Hello, your account shows an overdue amount. Please let us know when you can pay.",0.97,inbound,voicemail
+CALL_20250203_022,CUST_10024,AGT_503,2026-01-21 19:17:00,2026-01-21 19:23:59,419,+918131247330,"Hello, your account shows an overdue amount. Please let us know when you can pay.",0.88,outbound,completed
+CALL_20250201_023,CUST_10038,AGT_501,2026-01-31 15:25:00,2026-01-31 15:31:39,399,+918765670844,"Hello, your loan account will incur late fees if payment is not made by tomorrow.",0.79,inbound,no_answer
+CALL_20250206_024,CUST_10038,AGT_512,2026-01-21 07:07:00,2026-01-21 07:12:27,327,+918765670844,"Sir, we have a special settlement offer for your loan. Are you interested?",0.88,outbound,voicemail
+CALL_20250201_025,CUST_10044,AGT_510,2026-02-15 16:16:00,2026-02-15 16:17:39,99,+918225136114,"Good evening, just a reminder that your next EMI is due in 3 days.",0.74,outbound,completed
+CALL_20250121_026,CUST_10043,AGT_506,2026-02-17 16:27:00,2026-02-17 16:33:53,413,+917251837136,"Good morning, I am calling from the collections department about your pending dues.",0.85,outbound,completed
+CALL_20250126_027,CUST_10032,AGT_502,2026-01-28 19:20:00,2026-01-28 19:28:26,506,+918939118223,"Good afternoon, this is a courtesy call regarding your loan account.",0.98,inbound,voicemail
+CALL_20250208_028,CUST_10012,AGT_512,2026-02-01 15:07:00,2026-02-01 15:14:34,454,+919878380452,"Sir, we can offer a restructuring option for your loan. Would you like to discuss?",0.98,outbound,busy
+CALL_20250121_029,CUST_10031,AGT_508,2026-01-23 16:12:00,2026-01-23 16:17:20,320,+919962958940,"Good afternoon, this is a courtesy call regarding your loan account.",0.94,outbound,completed
+CALL_20250204_030,CUST_10006,AGT_505,2026-02-19 18:27:00,2026-02-19 18:28:01,61,+917667779376,"Hello, your loan account will incur late fees if payment is not made by tomorrow.",0.83,inbound,busy
+CALL_20250117_031,CUST_10025,AGT_506,2026-02-04 21:51:00,2026-02-04 21:55:21,261,+919744267175,"Hello sir, this is regarding your loan EMI payment which is overdue.",0.84,outbound,completed
+CALL_20250123_032,CUST_10023,AGT_513,2026-02-09 13:04:00,2026-02-09 13:10:38,398,+918461042543,"Sir, your payment of EMI was due last week. Can we discuss a payment plan?",0.8,outbound,busy
+CALL_20250215_033,CUST_10013,AGT_502,2026-02-01 12:42:00,2026-02-01 12:45:07,187,+918051454923,"Namaste, this call is about your outstanding loan balance.",0.91,inbound,busy
+CALL_20250204_034,CUST_10031,AGT_511,2026-01-28 21:19:00,2026-01-28 21:28:39,579,+919962958940,"Hi, this is regarding the bounce of your auto-debit. We need updated bank details.",0.84,outbound,completed
+CALL_20250202_035,CUST_10026,AGT_512,2026-02-11 17:26:00,2026-02-11 17:32:34,394,+917693847829,"Namaste, this call is about your outstanding loan balance.",0.79,outbound,no_answer
+CALL_20250120_036,CUST_10023,AGT_507,2026-02-08 18:18:00,2026-02-08 18:21:10,190,+918461042543,"Hi, this is regarding the bounce of your auto-debit. We need updated bank details.",0.86,outbound,voicemail
+CALL_20250125_037,CUST_10020,AGT_505,2026-02-14 13:42:00,2026-02-14 13:49:28,448,+917687117441,"Namaste, this call is about your outstanding loan balance.",0.73,outbound,completed
+CALL_20250210_038,CUST_10035,AGT_513,2026-01-30 18:57:00,2026-01-30 19:00:58,238,+919208283728,"Hi, this is regarding the bounce of your auto-debit. We need updated bank details.",0.75,outbound,voicemail
+CALL_20250123_039,CUST_10047,AGT_510,2026-02-01 16:19:00,2026-02-01 16:26:55,475,+917344076115,"Good evening, just a reminder that your next EMI is due in 3 days.",0.85,outbound,completed
+CALL_20250206_040,CUST_10015,AGT_506,2026-02-03 20:00:00,2026-02-03 20:06:11,371,+918354860540,"Hi, we noticed your EMI for this month has not been received yet.",0.79,outbound,completed
+CALL_20250214_041,CUST_10036,AGT_505,2026-02-11 10:27:00,2026-02-11 10:33:29,389,+917568275055,"Hi, this is regarding the bounce of your auto-debit. We need updated bank details.",0.97,inbound,completed
+CALL_20250215_042,CUST_10019,AGT_508,2026-02-06 14:28:00,2026-02-06 14:32:38,278,+919119634399,"Hi, we wanted to check if you received our SMS about the payment deadline.",0.83,outbound,completed
+CALL_20250204_043,CUST_10008,AGT_514,2026-02-04 14:50:00,2026-02-04 14:53:53,233,+919303082117,"Good morning, I am calling from the collections department about your pending dues.",0.82,outbound,busy
+CALL_20250213_044,CUST_10010,AGT_513,2026-01-30 08:18:00,2026-01-30 08:27:47,587,+917978815630,"Hello, your account shows an overdue amount. Please let us know when you can pay.",0.98,outbound,completed
+CALL_20250210_045,CUST_10049,AGT_507,2026-01-30 17:39:00,2026-01-30 17:45:43,403,+918800557283,"Hello, your account shows an overdue amount. Please let us know when you can pay.",0.87,outbound,busy
+CALL_20250128_046,CUST_10029,AGT_505,2026-02-18 20:48:00,2026-02-18 20:53:00,300,+917297265480,"Sir, we have a special settlement offer for your loan. Are you interested?",0.87,inbound,completed
+CALL_20250119_047,CUST_10004,AGT_510,2026-01-30 11:14:00,2026-01-30 11:18:23,263,+919791232393,"Hi, this is regarding the bounce of your auto-debit. We need updated bank details.",0.73,outbound,voicemail
+CALL_20250206_048,CUST_10043,AGT_502,2026-02-16 07:02:00,2026-02-16 07:07:10,310,+917251837136,"Hi, we noticed your EMI for this month has not been received yet.",0.77,outbound,completed
+CALL_20250216_049,CUST_10029,AGT_512,2026-02-05 16:54:00,2026-02-05 16:56:14,134,+917297265480,"Hello, your account shows an overdue amount. Please let us know when you can pay.",0.84,outbound,completed
+CALL_20250202_050,CUST_10019,AGT_512,2026-02-06 13:56:00,2026-02-06 14:00:19,259,+919119634399,"Sir, we have a special settlement offer for your loan. Are you interested?",0.83,outbound,completed
+CALL_20250118_051,CUST_10013,AGT_507,2026-01-29 18:24:00,2026-01-29 18:33:26,566,+918051454923,"Good morning, I am calling from the collections department about your pending dues.",0.86,outbound,completed
+CALL_20250209_052,CUST_10004,AGT_503,2026-02-08 10:09:00,2026-02-08 10:10:05,65,+919791232393,"Good evening, just a reminder that your next EMI is due in 3 days.",0.79,outbound,no_answer
+CALL_20250210_053,CUST_10045,AGT_505,2026-01-23 19:55:00,2026-01-23 19:57:49,169,+918274350418,"Hi, this is regarding the bounce of your auto-debit. We need updated bank details.",0.82,outbound,busy
+CALL_20250121_054,CUST_10029,AGT_502,2026-01-27 13:14:00,2026-01-27 13:18:00,240,+917297265480,"Hello, your account shows an overdue amount. Please let us know when you can pay.",0.71,inbound,voicemail
+CALL_20250131_055,CUST_10017,AGT_501,2026-01-26 18:33:00,2026-01-26 18:41:55,535,+917599707677,"Good morning, I am calling from the collections department about your pending dues.",0.77,outbound,voicemail
+CALL_20250203_056,CUST_10003,AGT_513,2026-02-19 15:15:00,2026-02-19 15:18:04,184,+917402418010,"Good evening, just a reminder that your next EMI is due in 3 days.",0.75,inbound,completed
+CALL_20250207_057,CUST_10028,AGT_511,2026-02-06 09:51:00,2026-02-06 09:59:55,535,+917248786714,"Sir, we have a special settlement offer for your loan. Are you interested?",0.84,outbound,no_answer
+CALL_20250130_058,CUST_10022,AGT_506,2026-01-30 15:35:00,2026-01-30 15:41:24,384,+917491995979,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.73,outbound,completed
+CALL_20250127_059,CUST_10032,AGT_505,2026-01-21 19:57:00,2026-01-21 20:05:33,513,+918939118223,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.97,outbound,no_answer
+CALL_20250212_060,CUST_10017,AGT_506,2026-02-01 20:46:00,2026-02-01 20:55:36,576,+917599707677,"Good morning, I am calling from the collections department about your pending dues.",0.98,inbound,busy
+CALL_20250216_061,CUST_10035,AGT_508,2026-02-07 20:58:00,2026-02-07 21:06:36,516,+919208283728,"Good afternoon, this is a courtesy call regarding your loan account.",0.72,outbound,busy
+CALL_20250123_062,CUST_10029,AGT_513,2026-01-23 09:47:00,2026-01-23 09:56:06,546,+917297265480,"Hello sir, this is regarding your loan EMI payment which is overdue.",0.76,outbound,completed
+CALL_20250126_063,CUST_10032,AGT_502,2026-02-06 11:48:00,2026-02-06 11:53:13,313,+918939118223,"Hello sir, this is regarding your loan EMI payment which is overdue.",0.98,outbound,voicemail
+CALL_20250208_064,CUST_10036,AGT_501,2026-01-25 17:17:00,2026-01-25 17:26:53,593,+917568275055,"Sir, we can offer a restructuring option for your loan. Would you like to discuss?",0.82,outbound,completed
+CALL_20250124_065,CUST_10042,AGT_514,2026-02-05 17:15:00,2026-02-05 17:20:41,341,+918015242176,"Hi, we noticed your EMI for this month has not been received yet.",0.84,outbound,busy
+CALL_20250203_066,CUST_10031,AGT_508,2026-02-06 08:45:00,2026-02-06 08:50:52,352,+919962958940,"Namaste, this call is about your outstanding loan balance.",0.83,outbound,no_answer
+CALL_20250207_067,CUST_10033,AGT_512,2026-02-13 11:21:00,2026-02-13 11:27:27,387,+919526766690,"Hello, your loan account will incur late fees if payment is not made by tomorrow.",0.74,outbound,completed
+CALL_20250127_068,CUST_10033,AGT_505,2026-01-23 15:05:00,2026-01-23 15:08:21,201,+919526766690,"Sir, we have a special settlement offer for your loan. Are you interested?",0.7,outbound,busy
+CALL_20250119_069,CUST_10032,AGT_514,2026-02-16 10:24:00,2026-02-16 10:27:36,216,+918939118223,"Hi, we noticed your EMI for this month has not been received yet.",0.83,inbound,completed
+CALL_20250131_070,CUST_10049,AGT_509,2026-01-29 10:04:00,2026-01-29 10:12:04,484,+918800557283,"Good afternoon, this is a courtesy call regarding your loan account.",0.83,outbound,completed
+CALL_20250204_071,CUST_10025,AGT_504,2026-02-07 12:34:00,2026-02-07 12:42:57,537,+919744267175,"Sir, we have a special settlement offer for your loan. Are you interested?",0.92,outbound,completed
+CALL_20250124_072,CUST_10025,AGT_507,2026-02-07 07:13:00,2026-02-07 07:21:10,490,+919744267175,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.93,outbound,no_answer
+CALL_20250214_073,CUST_10033,AGT_510,2026-02-08 21:49:00,2026-02-08 21:50:20,80,+919526766690,"Hello madam, I am following up on the payment reminder sent yesterday.",0.95,inbound,completed
+CALL_20250121_074,CUST_10001,AGT_512,2026-01-24 21:48:00,2026-01-24 21:55:29,449,+917107420369,"Hi, we noticed your EMI for this month has not been received yet.",0.82,outbound,completed
+CALL_20250124_075,CUST_10017,AGT_506,2026-02-05 07:22:00,2026-02-05 07:28:05,365,+917599707677,"Hello, your account shows an overdue amount. Please let us know when you can pay.",0.9,outbound,completed
+CALL_20250121_076,CUST_10021,AGT_511,2026-01-27 13:54:00,2026-01-27 14:02:09,489,+919559321289,"Hi, this is regarding the bounce of your auto-debit. We need updated bank details.",0.96,inbound,busy
+CALL_20250214_077,CUST_10005,AGT_504,2026-02-03 18:47:00,2026-02-03 18:51:45,285,+918194819984,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.9,outbound,completed
+CALL_20250211_078,CUST_10007,AGT_513,2026-02-05 10:17:00,2026-02-05 10:25:26,506,+918541804686,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.9,outbound,no_answer
+CALL_20250208_079,CUST_10020,AGT_515,2026-02-05 07:24:00,2026-02-05 07:30:44,404,+917687117441,"Hello sir, this is regarding your loan EMI payment which is overdue.",0.71,outbound,completed
+CALL_20250129_080,CUST_10028,AGT_503,2026-01-30 17:51:00,2026-01-30 17:58:54,474,+917248786714,"Namaste, this call is about your outstanding loan balance.",0.85,outbound,completed
+CALL_20250207_081,CUST_10040,AGT_514,2026-01-28 09:53:00,2026-01-28 10:01:58,538,+917602078388,"Good afternoon, this is a courtesy call regarding your loan account.",0.88,outbound,no_answer
+CALL_20250119_082,CUST_10015,AGT_508,2026-01-22 09:39:00,2026-01-22 09:40:27,87,+918354860540,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.77,outbound,voicemail
+CALL_20250215_083,CUST_10030,AGT_515,2026-01-22 13:37:00,2026-01-22 13:38:27,87,+919041322270,"Sir, your payment of EMI was due last week. Can we discuss a payment plan?",0.9,outbound,completed
+CALL_20250125_084,CUST_10038,AGT_505,2026-02-18 17:27:00,2026-02-18 17:30:18,198,+918765670844,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.98,outbound,no_answer
+CALL_20250201_085,CUST_10025,AGT_514,2026-01-24 14:11:00,2026-01-24 14:12:51,111,+919744267175,"Hi, we wanted to check if you received our SMS about the payment deadline.",0.73,inbound,busy
+CALL_20250129_086,CUST_10019,AGT_512,2026-02-12 13:20:00,2026-02-12 13:24:36,276,+919119634399,"Sir, your payment of EMI was due last week. Can we discuss a payment plan?",0.71,inbound,completed
+CALL_20250215_087,CUST_10044,AGT_513,2026-02-06 12:21:00,2026-02-06 12:28:28,448,+918225136114,"Hi, this is regarding the bounce of your auto-debit. We need updated bank details.",0.98,inbound,completed
+CALL_20250205_088,CUST_10023,AGT_504,2026-02-12 19:53:00,2026-02-12 20:01:11,491,+918461042543,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.76,outbound,voicemail
+CALL_20250209_089,CUST_10007,AGT_515,2026-02-12 20:05:00,2026-02-12 20:14:01,541,+918541804686,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.89,outbound,no_answer
+CALL_20250214_090,CUST_10024,AGT_512,2026-02-20 18:34:00,2026-02-20 18:35:53,113,+918131247330,"Hi, we noticed your EMI for this month has not been received yet.",0.73,outbound,completed
+CALL_20250127_091,CUST_10013,AGT_503,2026-01-21 12:14:00,2026-01-21 12:16:10,130,+918051454923,"Good evening, just a reminder that your next EMI is due in 3 days.",0.86,outbound,busy
+CALL_20250123_092,CUST_10011,AGT_505,2026-01-27 17:02:00,2026-01-27 17:03:31,91,+918193887545,"Hello, your loan account will incur late fees if payment is not made by tomorrow.",0.94,inbound,completed
+CALL_20250130_093,CUST_10008,AGT_508,2026-01-21 10:12:00,2026-01-21 10:13:20,80,+919303082117,"Good morning, I am calling from the collections department about your pending dues.",0.74,outbound,voicemail
+CALL_20250128_094,CUST_10036,AGT_506,2026-02-01 09:15:00,2026-02-01 09:18:09,189,+917568275055,"Good morning, I am calling from the collections department about your pending dues.",0.93,outbound,completed
+CALL_20250121_095,CUST_10030,AGT_506,2026-02-05 17:07:00,2026-02-05 17:11:43,283,+919041322270,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.92,outbound,busy
+CALL_20250128_096,CUST_10041,AGT_506,2026-02-06 18:16:00,2026-02-06 18:23:17,437,+918903232052,"Good morning, I am calling from the collections department about your pending dues.",0.9,inbound,completed
+CALL_20250120_097,CUST_10040,AGT_504,2026-02-15 16:38:00,2026-02-15 16:40:57,177,+917602078388,"Madam, we are calling to confirm your recent payment. Can you verify the amount?",0.72,inbound,voicemail
+CALL_20250201_098,CUST_10027,AGT_502,2026-01-27 20:10:00,2026-01-27 20:16:18,378,+919098545541,"Hi, we noticed your EMI for this month has not been received yet.",0.71,outbound,completed
+CALL_20250123_099,CUST_10007,AGT_504,2026-02-17 16:01:00,2026-02-17 16:07:19,379,+918541804686,"Hello, your loan account will incur late fees if payment is not made by tomorrow.",0.86,inbound,no_answer
+CALL_20250129_100,CUST_10048,AGT_512,2026-02-02 17:58:00,2026-02-02 18:05:24,444,+918734202799,"Sir, we can offer a restructuring option for your loan. Would you like to discuss?",0.82,outbound,no_answer

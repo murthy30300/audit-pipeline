@@ -1,0 +1,101 @@
+customer_id,name,phone_number,email,address,risk_category,last_updated
+CUST_10019,Suresh Pillai,+919119634399,suresh.pillai12@gmail.com,"Nagpur, Maharashtra",high,2025-02-16T06:58:36Z
+CUST_10039,Sunita Yadav,+918457293575,sunita.yadav14@yahoo.co.in,"Hyderabad, Telangana",medium,2025-02-15T19:45:21Z
+CUST_10041,Meena Singh,+918903232052,meena.singh71@gmail.com,"Mumbai, Maharashtra",high,2025-02-09T03:11:28Z
+CUST_10040,Pankaj Das,+917602078388,pankaj.das55@yahoo.co.in,"Chennai, Tamil Nadu",very_high,2025-02-05T03:16:51Z
+CUST_10020,Kavita Malhotra,+917687117441,kavita.malhotra88@rediffmail.com,"Lucknow, Uttar Pradesh",high,2025-02-03T03:50:16Z
+CUST_10034,Rajesh Singh,+919710566582,rajesh.singh8@yahoo.co.in,"Delhi, NCR",high,2025-02-06T01:55:40Z
+CUST_10018,Tina Rao,+918840109255,tina.rao75@rediffmail.com,"Kolkata, West Bengal",medium,2025-02-03T11:07:35Z
+CUST_10043,Anjali Yadav,+917251837136,anjali.yadav22@rediffmail.com,"Mumbai, Maharashtra",very_high,2025-02-07T04:03:20Z
+CUST_10024,Bhavna Kumar,+918131247330,bhavna.kumar65@yahoo.co.in,"Jaipur, Rajasthan",high,2025-02-10T19:12:40Z
+CUST_10031,Anjali Desai,+919962958940,anjali.desai26@outlook.com,"Pune, Maharashtra",low,2025-02-10T08:48:50Z
+CUST_10041,Meena Singh,+918903232052,meena.singh71@gmail.com,"Mumbai, Maharashtra",high,2025-02-05T04:39:59Z
+CUST_10035,Swati Singh,+919208283728,swati.singh31@outlook.com,"Chandigarh, Punjab",very_high,2025-02-07T23:20:51Z
+CUST_10001,Harish Verma,+917107420369,harish.verma95@outlook.com,"Hyderabad, Telangana",medium,2025-02-12T14:38:07Z
+CUST_10050,Sanjay Joshi,+919876451163,sanjay.joshi92@outlook.com,"Hyderabad, Telangana",low,2025-02-09T16:25:21Z
+CUST_10007,Sachin Verma,+918541804686,sachin.verma45@hotmail.com,"Chennai, Tamil Nadu",high,2025-02-11T19:12:08Z
+CUST_10044,Sanjay Das,+918225136114,sanjay.das55@hotmail.com,"Chandigarh, Punjab",very_high,2025-02-13T15:15:48Z
+CUST_10012,Ashok Joshi,+919878380452,ashok.joshi35@gmail.com,"Lucknow, Uttar Pradesh",medium,2025-02-15T14:13:56Z
+CUST_10013,Pankaj Chopra,+918051454923,pankaj.chopra21@rediffmail.com,"Pune, Maharashtra",low,2025-02-06T04:46:29Z
+CUST_10012,Ashok Joshi,+919878380452,ashok.joshi35@gmail.com,"Lucknow, Uttar Pradesh",medium,2025-02-01T10:46:53Z
+CUST_10025,Harish Iyer,+919744267175,harish.iyer65@hotmail.com,"Hyderabad, Telangana",medium,2025-02-15T23:53:09Z
+CUST_10021,Sachin Yadav,+919559321289,sachin.yadav60@hotmail.com,"Chennai, Tamil Nadu",high,2025-02-10T12:48:07Z
+CUST_10021,Sachin Yadav,+919559321289,sachin.yadav60@hotmail.com,"Chennai, Tamil Nadu",high,2025-02-11T08:56:56Z
+CUST_10049,Rina Singh,+918800557283,rina.singh85@hotmail.com,"Lucknow, Uttar Pradesh",low,2025-02-14T17:48:01Z
+CUST_10050,Sanjay Joshi,+919876451163,sanjay.joshi92@outlook.com,"Hyderabad, Telangana",low,2025-02-13T22:13:25Z
+CUST_10006,Swati Nair,+917667779376,swati.nair28@outlook.com,"Delhi, NCR",high,2025-02-01T23:00:09Z
+CUST_10022,Pallavi Chopra,+917491995979,pallavi.chopra88@hotmail.com,"Indore, Madhya Pradesh",low,2025-02-15T13:26:26Z
+CUST_10031,Anjali Desai,+919962958940,anjali.desai26@outlook.com,"Pune, Maharashtra",low,2025-02-05T12:55:46Z
+CUST_10016,Gaurav Bhat,+918351531223,gaurav.bhat28@rediffmail.com,"Pune, Maharashtra",very_high,2025-02-01T20:45:55Z
+CUST_10016,Gaurav Bhat,+918351531223,gaurav.bhat28@rediffmail.com,"Pune, Maharashtra",very_high,2025-02-15T04:38:39Z
+CUST_10026,Nisha Agarwal,+917693847829,nisha.agarwal70@hotmail.com,"Kochi, Kerala",high,2025-02-10T10:25:56Z
+CUST_10045,Kavita Joshi,+918274350418,kavita.joshi28@gmail.com,"Lucknow, Uttar Pradesh",high,2025-02-15T07:13:49Z
+CUST_10008,Ajay Das,+919303082117,ajay.das16@rediffmail.com,"Delhi, NCR",low,2025-02-06T14:39:49Z
+CUST_10008,Ajay Das,+919303082117,ajay.das16@rediffmail.com,"Delhi, NCR",low,2025-02-05T17:17:09Z
+CUST_10023,Anita Malhotra,+918461042543,anita.malhotra15@outlook.com,"Pune, Maharashtra",medium,2025-02-10T16:29:15Z
+CUST_10024,Bhavna Kumar,+918131247330,bhavna.kumar65@yahoo.co.in,"Jaipur, Rajasthan",high,2025-02-03T06:34:02Z
+CUST_10003,Amit Kumar,+917402418010,amit.kumar28@yahoo.co.in,"Jaipur, Rajasthan",high,2025-02-11T02:25:54Z
+CUST_10005,Nitin Rao,+918194819984,nitin.rao1@yahoo.co.in,"Bhopal, Madhya Pradesh",very_high,2025-02-15T00:07:09Z
+CUST_10026,Nisha Agarwal,+917693847829,nisha.agarwal70@hotmail.com,"Kochi, Kerala",high,2025-02-12T23:21:55Z
+CUST_10001,Harish Verma,+917107420369,harish.verma95@outlook.com,"Hyderabad, Telangana",medium,2025-02-04T03:27:34Z
+CUST_10017,Kavita Nair,+917599707677,kavita.nair32@hotmail.com,"Jaipur, Rajasthan",low,2025-02-09T08:29:31Z
+CUST_10017,Kavita Nair,+917599707677,kavita.nair32@hotmail.com,"Jaipur, Rajasthan",low,2025-02-10T16:35:28Z
+CUST_10002,Suresh Chopra,+917440213415,suresh.chopra87@hotmail.com,"Delhi, NCR",very_high,2025-02-02T09:23:30Z
+CUST_10030,Suresh Saxena,+919041322270,suresh.saxena71@yahoo.co.in,"Chennai, Tamil Nadu",very_high,2025-02-08T15:13:31Z
+CUST_10007,Sachin Verma,+918541804686,sachin.verma45@hotmail.com,"Chennai, Tamil Nadu",high,2025-02-02T08:35:48Z
+CUST_10049,Rina Singh,+918800557283,rina.singh85@hotmail.com,"Lucknow, Uttar Pradesh",low,2025-02-01T20:41:16Z
+CUST_10036,Anjali Desai,+917568275055,anjali.desai93@hotmail.com,"Lucknow, Uttar Pradesh",very_high,2025-02-08T14:11:57Z
+CUST_10043,Anjali Yadav,+917251837136,anjali.yadav22@rediffmail.com,"Mumbai, Maharashtra",very_high,2025-02-10T14:59:37Z
+CUST_10037,Meena Bose,+918748309234,meena.bose25@gmail.com,"Delhi, NCR",very_high,2025-02-09T01:12:35Z
+CUST_10012,Ashok Joshi,+919878380452,ashok.joshi35@gmail.com,"Lucknow, Uttar Pradesh",medium,2025-02-12T21:32:42Z
+CUST_10027,Tarun Mishra,+919098545541,tarun.mishra3@gmail.com,"Kochi, Kerala",low,2025-02-03T17:20:58Z
+CUST_10016,Gaurav Bhat,+918351531223,gaurav.bhat28@rediffmail.com,"Pune, Maharashtra",very_high,2025-02-11T00:14:00Z
+CUST_10009,Harish Shah,+918553210608,harish.shah74@yahoo.co.in,"Bhopal, Madhya Pradesh",high,2025-02-06T08:05:02Z
+CUST_10030,Suresh Saxena,+919041322270,suresh.saxena71@yahoo.co.in,"Chennai, Tamil Nadu",very_high,2025-02-09T01:56:44Z
+CUST_10004,Shweta Joshi,+919791232393,shweta.joshi90@hotmail.com,"Pune, Maharashtra",medium,2025-02-09T16:42:41Z
+CUST_10013,Pankaj Chopra,+918051454923,pankaj.chopra21@rediffmail.com,"Pune, Maharashtra",low,2025-02-14T21:29:23Z
+CUST_10033,Swati Kumar,+919526766690,swati.kumar71@yahoo.co.in,"Lucknow, Uttar Pradesh",medium,2025-02-02T20:41:18Z
+CUST_10033,Swati Kumar,+919526766690,swati.kumar71@yahoo.co.in,"Lucknow, Uttar Pradesh",medium,2025-02-02T00:19:45Z
+CUST_10006,Swati Nair,+917667779376,swati.nair28@outlook.com,"Delhi, NCR",high,2025-02-12T02:58:40Z
+CUST_10042,Pooja Agarwal,+918015242176,pooja.agarwal22@rediffmail.com,"Ahmedabad, Gujarat",very_high,2025-02-06T00:08:16Z
+CUST_10045,Kavita Joshi,+918274350418,kavita.joshi28@gmail.com,"Lucknow, Uttar Pradesh",high,2025-02-02T21:11:37Z
+CUST_10046,Tina Mishra,+917245522987,tina.mishra7@hotmail.com,"Ahmedabad, Gujarat",medium,2025-02-04T08:16:48Z
+CUST_10014,Harish Bhat,+919392080953,harish.bhat29@outlook.com,"Nagpur, Maharashtra",high,2025-02-15T05:41:17Z
+CUST_10044,Sanjay Das,+918225136114,sanjay.das55@hotmail.com,"Chandigarh, Punjab",very_high,2025-02-08T00:21:50Z
+CUST_10049,Rina Singh,+918800557283,rina.singh85@hotmail.com,"Lucknow, Uttar Pradesh",low,2025-02-07T02:57:41Z
+CUST_10028,Geeta Reddy,+917248786714,geeta.reddy31@hotmail.com,"Delhi, NCR",high,2025-02-03T15:28:42Z
+CUST_10042,Pooja Agarwal,+918015242176,pooja.agarwal22@rediffmail.com,"Ahmedabad, Gujarat",very_high,2025-02-08T15:19:26Z
+CUST_10022,Pallavi Chopra,+917491995979,pallavi.chopra88@hotmail.com,"Indore, Madhya Pradesh",low,2025-02-06T06:28:24Z
+CUST_10011,Rahul Yadav,+918193887545,rahul.yadav59@outlook.com,"Bangalore, Karnataka",low,2025-02-06T11:10:19Z
+CUST_10045,Kavita Joshi,+918274350418,kavita.joshi28@gmail.com,"Lucknow, Uttar Pradesh",high,2025-02-12T18:04:28Z
+CUST_10026,Nisha Agarwal,+917693847829,nisha.agarwal70@hotmail.com,"Kochi, Kerala",high,2025-02-09T02:18:09Z
+CUST_10009,Harish Shah,+918553210608,harish.shah74@yahoo.co.in,"Bhopal, Madhya Pradesh",high,2025-02-07T05:41:46Z
+CUST_10004,Shweta Joshi,+919791232393,shweta.joshi90@hotmail.com,"Pune, Maharashtra",medium,2025-02-11T21:52:58Z
+CUST_10008,Ajay Das,+919303082117,ajay.das16@rediffmail.com,"Delhi, NCR",low,2025-02-03T07:38:03Z
+CUST_10015,Ravi Sharma,+918354860540,ravi.sharma52@outlook.com,"Delhi, NCR",medium,2025-02-04T21:09:20Z
+CUST_10029,Ajay Bose,+917297265480,ajay.bose98@hotmail.com,"Indore, Madhya Pradesh",medium,2025-02-10T12:37:34Z
+CUST_10010,Amit Saxena,+917978815630,amit.saxena99@outlook.com,"Delhi, NCR",medium,2025-02-10T21:43:39Z
+CUST_10047,Sunita Pillai,+917344076115,sunita.pillai24@gmail.com,"Lucknow, Uttar Pradesh",high,2025-02-09T01:48:31Z
+CUST_10037,Meena Bose,+918748309234,meena.bose25@gmail.com,"Delhi, NCR",very_high,2025-02-12T20:54:33Z
+CUST_10033,Swati Kumar,+919526766690,swati.kumar71@yahoo.co.in,"Lucknow, Uttar Pradesh",medium,2025-02-05T03:16:06Z
+CUST_10016,Gaurav Bhat,+918351531223,gaurav.bhat28@rediffmail.com,"Pune, Maharashtra",very_high,2025-02-14T23:25:54Z
+CUST_10011,Rahul Yadav,+918193887545,rahul.yadav59@outlook.com,"Bangalore, Karnataka",low,2025-02-02T17:23:12Z
+CUST_10020,Kavita Malhotra,+917687117441,kavita.malhotra88@rediffmail.com,"Lucknow, Uttar Pradesh",high,2025-02-06T08:35:53Z
+CUST_10032,Nitin Pillai,+918939118223,nitin.pillai16@yahoo.co.in,"Hyderabad, Telangana",high,2025-02-06T06:22:00Z
+CUST_10028,Geeta Reddy,+917248786714,geeta.reddy31@hotmail.com,"Delhi, NCR",high,2025-02-02T20:21:25Z
+CUST_10001,Harish Verma,+917107420369,harish.verma95@outlook.com,"Hyderabad, Telangana",medium,2025-02-03T12:15:27Z
+CUST_10026,Nisha Agarwal,+917693847829,nisha.agarwal70@hotmail.com,"Kochi, Kerala",high,2025-02-13T02:53:08Z
+CUST_10025,Harish Iyer,+919744267175,harish.iyer65@hotmail.com,"Hyderabad, Telangana",medium,2025-02-06T22:43:47Z
+CUST_10040,Pankaj Das,+917602078388,pankaj.das55@yahoo.co.in,"Chennai, Tamil Nadu",very_high,2025-02-10T11:31:29Z
+CUST_10020,Kavita Malhotra,+917687117441,kavita.malhotra88@rediffmail.com,"Lucknow, Uttar Pradesh",high,2025-02-10T04:27:16Z
+CUST_10038,Ashok Mehta,+918765670844,ashok.mehta60@gmail.com,"Chandigarh, Punjab",high,2025-02-11T10:32:52Z
+CUST_10021,Sachin Yadav,+919559321289,sachin.yadav60@hotmail.com,"Chennai, Tamil Nadu",high,2025-02-08T08:36:29Z
+CUST_10020,Kavita Malhotra,+917687117441,kavita.malhotra88@rediffmail.com,"Lucknow, Uttar Pradesh",high,2025-02-14T10:56:18Z
+CUST_10043,Anjali Yadav,+917251837136,anjali.yadav22@rediffmail.com,"Mumbai, Maharashtra",very_high,2025-02-05T10:58:49Z
+CUST_10018,Tina Rao,+918840109255,tina.rao75@rediffmail.com,"Kolkata, West Bengal",medium,2025-02-07T08:49:55Z
+CUST_10046,Tina Mishra,+917245522987,tina.mishra7@hotmail.com,"Ahmedabad, Gujarat",medium,2025-02-14T03:08:09Z
+CUST_10029,Ajay Bose,+917297265480,ajay.bose98@hotmail.com,"Indore, Madhya Pradesh",medium,2025-02-03T08:58:11Z
+CUST_10047,Sunita Pillai,+917344076115,sunita.pillai24@gmail.com,"Lucknow, Uttar Pradesh",high,2025-02-11T18:02:12Z
+CUST_10048,Pallavi Reddy,+918734202799,pallavi.reddy16@hotmail.com,"Hyderabad, Telangana",high,2025-02-15T02:58:40Z
+CUST_10038,Ashok Mehta,+918765670844,ashok.mehta60@gmail.com,"Chandigarh, Punjab",high,2025-02-09T20:36:36Z
+CUST_10017,Kavita Nair,+917599707677,kavita.nair32@hotmail.com,"Jaipur, Rajasthan",low,2025-02-07T05:17:02Z

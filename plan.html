@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 1 — Engineering Blueprint</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Fraunces:opsz,wght@9..144,300;9..144,600;9..144,700&display=swap');
+
+:root {
+  --bg: #f7f4ef;
+  --surface: #ffffff;
+  --surface2: #f0ece4;
+  --border: #e0d9ce;
+  --border2: #c8bfb0;
+  --ink: #1a1714;
+  --ink2: #5c5449;
+  --ink3: #9c9080;
+  --c1: #c0392b; /* red */
+  --c2: #2563eb; /* blue */
+  --c3: #059669; /* green */
+  --c4: #d97706; /* amber */
+  --c5: #7c3aed; /* purple */
+  --c6: #0891b2; /* cyan */
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Fraunces', Georgia, serif;
+  min-height: 100vh;
+}
+
+/* Sidebar nav */
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 240px;
+  background: var(--ink);
+  padding: 32px 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  padding: 0 24px 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 20px;
+}
+
+.sidebar-logo h2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.sidebar-logo p {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.nav-section {
+  padding: 0 16px;
+  margin-bottom: 8px;
+}
+
+.nav-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  padding: 8px 8px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8); }
+.nav-item.active { background: rgba(255,255,255,0.1); color: #fff; }
+
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Main content */
+.main { flex: 1; padding: 48px 56px; max-width: 960px; }
+
+.section { display: none; }
+.section.active { display: block; }
+
+/* Section header */
+.sec-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 36px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border);
+}
+
+.sec-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink3);
+  letter-spacing: 1px;
+  padding-top: 6px;
+}
+
+.sec-title h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.sec-title p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink3);
+  margin-top: 6px;
+}
+
+/* Stage blocks */
+.stage {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.stage-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  background: var(--surface);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.stage-header:hover { background: var(--surface2); }
+.stage.open .stage-header { border-bottom-color: var(--border); }
+
+.stage-header-left { display: flex; align-items: center; gap: 12px; }
+
+.stage-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.stage-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.stage-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink3);
+  margin-top: 2px;
+}
+
+.stage-chevron {
+  font-size: 10px;
+  color: var(--ink3);
+  transition: transform 0.2s;
+}
+
+.stage.open .stage-chevron { transform: rotate(180deg); }
+
+.stage-body { display: none; padding: 20px; }
+.stage.open .stage-body { display: block; }
+
+/* Function cards */
+.fn-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.fn-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.fn-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.fn-type {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-left: auto;
+}
+
+.fn-body { padding: 16px; }
+
+/* IO rows */
+.io-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 12px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+
+.io-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding-top: 2px;
+}
+
+.io-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink2);
+  line-height: 1.6;
+}
+
+.io-val code {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 10px;
+  color: var(--ink);
+}
+
+/* Logic steps */
+.logic {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-top: 10px;
+}
+
+.logic-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 8px;
+}
+
+.logic-step {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink2);
+  line-height: 1.5;
+}
+
+.logic-step-num {
+  color: var(--ink3);
+  min-width: 16px;
+  font-weight: 700;
+}
+
+/* Return box */
+.return-box {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-left: 3px solid;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-top: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink2);
+  line-height: 1.6;
+}
+
+.return-box strong {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Flow connector */
+.flow-connector {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 8px 0;
+  padding: 0 4px;
+}
+
+.flow-connector-line {
+  flex: 1;
+  height: 1px;
+  border-top: 2px dashed var(--border2);
+}
+
+.flow-connector-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--ink3);
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+/* Error box */
+.error-box {
+  background: rgba(192,57,43,0.05);
+  border: 1px solid rgba(192,57,43,0.2);
+  border-left: 3px solid var(--c1);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink2);
+  line-height: 1.6;
+}
+
+.error-box strong {
+  color: var(--c1);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* File tree */
+.file-tree {
+  background: var(--ink);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  line-height: 2;
+  margin: 12px 0;
+}
+
+.file-tree .dir { color: #60a5fa; }
+.file-tree .file { color: rgba(255,255,255,0.6); }
+.file-tree .comment { color: rgba(255,255,255,0.25); }
+
+/* Tables */
+.schema-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  margin: 10px 0;
+}
+
+.schema-table th {
+  text-align: left;
+  padding: 6px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--ink3);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.schema-table td {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  color: var(--ink2);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.schema-table tr:nth-child(even) td { background: var(--surface2); }
+
+.col-pk { color: var(--c4); font-weight: 700; }
+.col-fk { color: var(--c2); }
+.col-new { color: var(--c1); }
+
+/* Chips */
+.chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin: 2px 2px 2px 0;
+}
+
+/* Section progress */
+.progress-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 32px;
+}
+
+.progress-step {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.progress-step.done { background: var(--c3); }
+.progress-step.active { background: var(--c2); }
+
+/* Overview grid */
+.overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.ov-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  border-top: 3px solid;
+}
+
+.ov-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 6px;
+}
+
+.ov-val {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.ov-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink3);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* Divider */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { padding: 24px 20px; }
+  .overview-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h2>Phase 1</h2>
+    <p>Engineering Blueprint</p>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Overview</div>
+    <button class="nav-item active" onclick="show('overview', this)">
+      <div class="nav-dot" style="background:#9c9080"></div> Project Structure
+    </button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Pipeline Stages</div>
+    <button class="nav-item" onclick="show('ingestion', this)">
+      <div class="nav-dot" style="background:#c0392b"></div> 01 · CSV → PostgreSQL
+    </button>
+    <button class="nav-item" onclick="show('etl', this)">
+      <div class="nav-dot" style="background:#2563eb"></div> 02 · PG → ClickHouse (Airflow)
+    </button>
+    <button class="nav-item" onclick="show('transforms', this)">
+      <div class="nav-dot" style="background:#059669"></div> 03 · Bronze → Silver → Gold
+    </button>
+    <button class="nav-item" onclick="show('serving', this)">
+      <div class="nav-dot" style="background:#d97706"></div> 04 · Redis + FastAPI Serving
+    </button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Must-Haves</div>
+    <button class="nav-item" onclick="show('audit', this)">
+      <div class="nav-dot" style="background:#7c3aed"></div> 05 · Audit Query Log
+    </button>
+    <button class="nav-item" onclick="show('quality', this)">
+      <div class="nav-dot" style="background:#0891b2"></div> 06 · Data Quality Checks
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- OVERVIEW -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section active" id="sec-overview">
+  <div class="sec-header">
+    <div class="sec-num">00</div>
+    <div class="sec-title">
+      <h1>Project Structure</h1>
+      <p>Folder layout · Tech stack · Data contracts · Execution order</p>
+    </div>
+  </div>
+
+  <div class="overview-grid">
+    <div class="ov-card" style="border-top-color:#c0392b">
+      <div class="ov-label">Ingestion</div>
+      <div class="ov-val">CSV → PostgreSQL</div>
+      <div class="ov-sub">Python scripts · pandas · psycopg2<br>Validates, deduplicates, writes to OLTP</div>
+    </div>
+    <div class="ov-card" style="border-top-color:#2563eb">
+      <div class="ov-label">ETL Orchestration</div>
+      <div class="ov-val">Airflow DAGs (1 per source)</div>
+      <div class="ov-sub">PG → ClickHouse Bronze<br>Scheduled every 15 min</div>
+    </div>
+    <div class="ov-card" style="border-top-color:#059669">
+      <div class="ov-label">Transformation</div>
+      <div class="ov-val">Bronze → Silver → Gold</div>
+      <div class="ov-sub">ClickHouse SQL transforms<br>Materialized views for Gold</div>
+    </div>
+    <div class="ov-card" style="border-top-color:#d97706">
+      <div class="ov-label">Serving</div>
+      <div class="ov-val">FastAPI + Redis</div>
+      <div class="ov-sub">Role-based endpoints<br>Cache Gold layer · TTL 30–60s</div>
+    </div>
+  </div>
+
+  <div class="file-tree">
+    <span class="dir">compliance-pipeline/</span><br>
+    &nbsp;&nbsp;<span class="dir">ingestion/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">base_ingestor.py</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># abstract base class</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">loan_ingestor.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">call_ingestor.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">payment_ingestor.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">crm_ingestor.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">sms_ingestor.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">tts_ingestor.py</span><br>
+    &nbsp;&nbsp;<span class="dir">airflow/dags/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">dag_loans.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 1 DAG per source</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">dag_calls.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">dag_payments.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">dag_crm.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">dag_messages.py</span><br>
+    &nbsp;&nbsp;<span class="dir">transforms/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">silver_loans.sql</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">silver_calls.sql</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">gold_views.sql</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># all MV definitions</span><br>
+    &nbsp;&nbsp;<span class="dir">api/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">main.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># FastAPI app</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">routers/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">lender.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">agent.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">manager.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">hr.py</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">cache.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Redis wrapper</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">audit_log.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># query logging middleware</span><br>
+    &nbsp;&nbsp;<span class="dir">quality/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">validators.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># schema + null + dupe checks</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">report.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># validation result model</span><br>
+    &nbsp;&nbsp;<span class="file">config.py</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># DB URIs, TTLs, thresholds</span>
+  </div>
+
+  <div style="margin-top: 24px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:12px">Execution Order</div>
+    <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap">
+      <div style="padding:8px 14px;background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--c1)">1. CSV Drop</div>
+      <div style="padding:0 8px;color:var(--ink3);font-size:14px">→</div>
+      <div style="padding:8px 14px;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.2);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c1)">2. validate()</div>
+      <div style="padding:0 8px;color:var(--ink3);font-size:14px">→</div>
+      <div style="padding:8px 14px;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.2);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c1)">3. write_to_postgres()</div>
+      <div style="padding:0 8px;color:var(--ink3);font-size:14px">→</div>
+      <div style="padding:8px 14px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c2)">4. Airflow: extract_from_pg()</div>
+      <div style="padding:0 8px;color:var(--ink3);font-size:14px">→</div>
+      <div style="padding:8px 14px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c2)">5. load_to_bronze()</div>
+      <div style="padding:0 8px;color:var(--ink3);font-size:14px">→</div>
+      <div style="padding:8px 14px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.2);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c3)">6. transform_to_silver()</div>
+      <div style="padding:0 8px;color:var(--ink3);font-size:14px">→</div>
+      <div style="padding:8px 14px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.2);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c3)">7. Gold MVs auto-update</div>
+      <div style="padding:0 8px;color:var(--ink3);font-size:14px">→</div>
+      <div style="padding:8px 14px;background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.2);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c4)">8. API serves Gold + Redis</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- 01: CSV INGESTION -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="sec-ingestion">
+  <div class="sec-header">
+    <div class="sec-num">01</div>
+    <div class="sec-title">
+      <h1>CSV → PostgreSQL</h1>
+      <p>ingestion/ · base_ingestor.py · source_ingestor.py · validators.py</p>
+    </div>
+  </div>
+
+  <!-- Base class -->
+  <div class="stage open">
+    <div class="stage-header" onclick="toggleStage(this)">
+      <div class="stage-header-left">
+        <span class="stage-tag" style="background:rgba(192,57,43,0.1);color:var(--c1)">Abstract Base</span>
+        <div>
+          <div class="stage-name">BaseIngestor</div>
+          <div class="stage-sub">base_ingestor.py — all source ingestors inherit this</div>
+        </div>
+      </div>
+      <span class="stage-chevron">▼</span>
+    </div>
+    <div class="stage-body">
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">__init__(source_name, pg_conn_str, csv_path)</div>
+          <span class="fn-type" style="background:rgba(37,99,235,0.1);color:var(--c2)">Constructor</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Inputs</div><div class="io-val"><code>source_name</code> str — "loans", "calls" etc<br><code>pg_conn_str</code> str — from config.py<br><code>csv_path</code> Path — file or directory of CSVs</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Sets Up</div><div class="io-val">DB connection pool · logger · source metadata dict</div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">load_csv() → DataFrame</div>
+          <span class="fn-type" style="background:rgba(192,57,43,0.1);color:var(--c1)">Abstract</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Input</div><div class="io-val">Reads from <code>self.csv_path</code></div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val">Raw <code>pd.DataFrame</code> — no cleaning applied yet</div></div>
+          <div class="return-box" style="border-left-color:var(--c1)">
+            <strong>Each subclass overrides this</strong>
+            Each source CSV has different column names. LoanIngestor.load_csv() maps loan CSV columns to canonical names. CallIngestor maps ASR transcript columns. Override here, not downstream.
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">validate(df) → ValidationReport</div>
+          <span class="fn-type" style="background:rgba(192,57,43,0.1);color:var(--c1)">Abstract</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Input</div><div class="io-val">Raw <code>pd.DataFrame</code> from load_csv()</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>ValidationReport</code> dataclass: <code>is_valid: bool</code>, <code>errors: list[str]</code>, <code>warning_rows: list[int]</code>, <code>null_counts: dict</code>, <code>duplicate_count: int</code></div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">write_to_postgres(df, report) → WriteResult</div>
+          <span class="fn-type" style="background:rgba(5,150,105,0.1);color:var(--c3)">Concrete</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Inputs</div><div class="io-val">Clean <code>pd.DataFrame</code> · <code>ValidationReport</code></div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Guard</div><div class="io-val">If <code>report.is_valid == False</code> → abort, write to error log, return early</div></div>
+          <div class="logic">
+            <div class="logic-title">Write Logic</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Begin transaction</div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>Upsert rows using ON CONFLICT (primary key) DO UPDATE — idempotent, safe to re-run</div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>Write ingestion_log row: source, file_name, row_count, timestamp, status</div>
+            <div class="logic-step"><span class="logic-step-num">4.</span>Commit · return WriteResult</div>
+            <div class="logic-step"><span class="logic-step-num">5.</span>On exception: rollback · log error · return WriteResult with failure</div>
+          </div>
+          <div class="io-row" style="margin-top:10px"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>WriteResult</code>: <code>rows_written: int</code>, <code>rows_skipped: int</code>, <code>status: "success"|"partial"|"failed"</code>, <code>error_msg: str|None</code></div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">run() → WriteResult</div>
+          <span class="fn-type" style="background:rgba(5,150,105,0.1);color:var(--c3)">Orchestrator</span>
+        </div>
+        <div class="fn-body">
+          <div class="logic">
+            <div class="logic-title">Calls in order</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span><code>df = self.load_csv()</code></div>
+            <div class="logic-step"><span class="logic-step-num">2.</span><code>report = self.validate(df)</code></div>
+            <div class="logic-step"><span class="logic-step-num">3.</span><code>result = self.write_to_postgres(df, report)</code></div>
+            <div class="logic-step"><span class="logic-step-num">4.</span>Return <code>result</code> — Airflow task reads this to set success/failure</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Source-specific ingestors -->
+  <div class="stage">
+    <div class="stage-header" onclick="toggleStage(this)">
+      <div class="stage-header-left">
+        <span class="stage-tag" style="background:rgba(37,99,235,0.1);color:var(--c2)">Source Classes</span>
+        <div>
+          <div class="stage-name">LoanIngestor / CallIngestor / PaymentIngestor / etc.</div>
+          <div class="stage-sub">Each source overrides load_csv() and validate() with source-specific rules</div>
+        </div>
+      </div>
+      <span class="stage-chevron">▼</span>
+    </div>
+    <div class="stage-body">
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">LoanIngestor.load_csv() → DataFrame</div>
+          <span class="fn-type" style="background:rgba(37,99,235,0.1);color:var(--c2)">Override</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Input</div><div class="io-val">NBFC loan CSV — raw column names vary per vendor</div></div>
+          <div class="logic">
+            <div class="logic-title">What happens inside</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Read CSV with <code>pd.read_csv()</code>, enforce <code>dtype</code> per column (prevent silent type coercions)</div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>Rename columns to canonical schema: <code>{"LoanID": "loan_id", "Amt": "principal_amount", ...}</code></div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>Add <code>ingested_at = datetime.utcnow()</code> column</div>
+            <div class="logic-step"><span class="logic-step-num">4.</span>Add <code>source_file = filename</code> column for traceability</div>
+          </div>
+          <div class="io-row" style="margin-top:10px"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val">DataFrame with canonical column names, ready for validate()</div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">LoanIngestor.validate(df) → ValidationReport</div>
+          <span class="fn-type" style="background:rgba(37,99,235,0.1);color:var(--c2)">Override</span>
+        </div>
+        <div class="fn-body">
+          <div class="logic">
+            <div class="logic-title">Loan-specific checks</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Required non-null: <code>loan_id</code>, <code>borrower_id</code>, <code>principal_amount</code>, <code>disbursement_date</code></div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>Duplicate check: <code>loan_id</code> must be unique within the file</div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>Range checks: <code>principal_amount > 0</code>, <code>interest_rate</code> between 0–100</div>
+            <div class="logic-step"><span class="logic-step-num">4.</span>Date sanity: <code>disbursement_date</code> not in future, not before 2010</div>
+            <div class="logic-step"><span class="logic-step-num">5.</span>Status enum: <code>loan_status</code> in allowed set ("ACTIVE", "CLOSED", "NPA", "WRITTEN_OFF")</div>
+          </div>
+          <div class="error-box">
+            <strong>Hard fail vs soft warn</strong>
+            Null loan_id or duplicate loan_id = hard fail → abort entire file write.<br>
+            Null phone_number = soft warning → write row but flag it.<br>
+            This distinction goes in ValidationReport.errors vs ValidationReport.warning_rows.
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">CallIngestor.validate(df) → ValidationReport</div>
+          <span class="fn-type" style="background:rgba(37,99,235,0.1);color:var(--c2)">Override</span>
+        </div>
+        <div class="fn-body">
+          <div class="logic">
+            <div class="logic-title">Call-specific checks</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Required: <code>call_id</code>, <code>loan_id</code>, <code>agent_id</code>, <code>call_start_time</code></div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>FK check: <code>loan_id</code> must exist in <code>loans</code> table (query PG before write)</div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>Duration sanity: <code>call_duration_sec</code> between 0–7200 (2 hrs max)</div>
+            <div class="logic-step"><span class="logic-step-num">4.</span>Transcript non-empty if <code>call_status = "COMPLETED"</code></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PostgreSQL schema -->
+  <div class="stage">
+    <div class="stage-header" onclick="toggleStage(this)">
+      <div class="stage-header-left">
+        <span class="stage-tag" style="background:rgba(124,58,237,0.1);color:var(--c5)">PostgreSQL Schema</span>
+        <div>
+          <div class="stage-name">Core OLTP Tables</div>
+          <div class="stage-sub">Normalized · Indexed · Write targets for all ingestors</div>
+        </div>
+      </div>
+      <span class="stage-chevron">▼</span>
+    </div>
+    <div class="stage-body">
+      <table class="schema-table">
+        <tr><th>Table</th><th>Key Columns</th><th>Primary Key</th><th>Indexes</th></tr>
+        <tr><td>loans</td><td>loan_id, borrower_id, principal_amount, interest_rate, disbursement_date, tenure_months, loan_status, lender_id</td><td class="col-pk">loan_id</td><td>borrower_id, lender_id, loan_status, disbursement_date</td></tr>
+        <tr><td>calls</td><td>call_id, loan_id, agent_id, call_start_time, call_duration_sec, call_status, transcript_text, sentiment_score</td><td class="col-pk">call_id</td><td>loan_id, agent_id, call_start_time</td></tr>
+        <tr><td>payments</td><td>payment_id, loan_id, amount, payment_date, payment_mode, gateway_status, bounce_flag</td><td class="col-pk">payment_id</td><td>loan_id, payment_date, gateway_status</td></tr>
+        <tr><td>messages</td><td>message_id, loan_id, direction, channel, content_type, delivery_status, sent_at, recipient_phone</td><td class="col-pk">message_id</td><td>loan_id, sent_at, channel</td></tr>
+        <tr><td>agents</td><td>agent_id, name, branch_id, manager_id, employment_status, created_at</td><td class="col-pk">agent_id</td><td>branch_id, manager_id</td></tr>
+        <tr><td>ingestion_log</td><td class="col-new">source, file_name, row_count, status, error_msg, ingested_at</td><td class="col-pk">log_id (serial)</td><td>source, ingested_at</td></tr>
+        <tr><td class="col-new">audit_query_log</td><td class="col-new">user_id, user_role, view_accessed, filters_json, queried_at, rows_returned, ip_address</td><td class="col-pk col-new">query_id (uuid)</td><td>user_id, queried_at</td></tr>
+      </table>
+      <div class="error-box" style="margin-top:8px">
+        <strong>audit_query_log must be created at Phase 1 launch</strong>
+        Once lenders start querying dashboards, you cannot retroactively reconstruct who accessed what data. This table is populated by FastAPI middleware, not by ingestion. It's 20 lines to implement but has permanent compliance value.
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- 02: AIRFLOW ETL -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="sec-etl">
+  <div class="sec-header">
+    <div class="sec-num">02</div>
+    <div class="sec-title">
+      <h1>Airflow: PG → ClickHouse</h1>
+      <p>airflow/dags/ · 1 DAG per source · 15-min schedule · Bronze write</p>
+    </div>
+  </div>
+
+  <div class="stage open">
+    <div class="stage-header" onclick="toggleStage(this)">
+      <div class="stage-header-left">
+        <span class="stage-tag" style="background:rgba(37,99,235,0.1);color:var(--c2)">DAG Structure</span>
+        <div>
+          <div class="stage-name">dag_loans.py (replicated per source)</div>
+          <div class="stage-sub">Each DAG is independent — failure in loans DAG does not block payments DAG</div>
+        </div>
+      </div>
+      <span class="stage-chevron">▼</span>
+    </div>
+    <div class="stage-body">
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">DAG definition</div>
+          <span class="fn-type" style="background:rgba(37,99,235,0.1);color:var(--c2)">Config</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">dag_id</div><div class="io-val"><code>"etl_loans_pg_to_bronze"</code></div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">schedule</div><div class="io-val"><code>"*/15 * * * *"</code> — every 15 minutes</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">catchup</div><div class="io-val"><code>False</code> — don't backfill missed runs</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">retries</div><div class="io-val"><code>3</code> with <code>retry_delay=5min</code></div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">on_failure</div><div class="io-val">Slack/email alert callback</div></div>
+          <div class="logic" style="margin-top:10px">
+            <div class="logic-title">Task Chain</div>
+            <div class="logic-step"><span class="logic-step-num">T1</span><code>get_watermark</code> — what's the last processed timestamp?</div>
+            <div class="logic-step"><span class="logic-step-num">T2</span><code>extract_from_postgres</code> — fetch rows updated since watermark</div>
+            <div class="logic-step"><span class="logic-step-num">T3</span><code>validate_extract</code> — row count check, schema check</div>
+            <div class="logic-step"><span class="logic-step-num">T4</span><code>load_to_bronze</code> — write to ClickHouse Bronze table</div>
+            <div class="logic-step"><span class="logic-step-num">T5</span><code>update_watermark</code> — save new high-water mark to Airflow Variable</div>
+            <div class="logic-step"><span class="logic-step-num">T6</span><code>trigger_silver_transform</code> — kick off Silver DAG (or inline)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">get_watermark(source_name) → datetime</div>
+          <span class="fn-type" style="background:rgba(5,150,105,0.1);color:var(--c3)">Task T1</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Input</div><div class="io-val"><code>source_name</code> str — "loans"</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Reads from</div><div class="io-val">Airflow Variable: <code>watermark_loans</code></div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>datetime</code> — last successful run timestamp. Returns epoch (1970) on first run so full load is extracted.</div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">extract_from_postgres(source, watermark) → list[dict]</div>
+          <span class="fn-type" style="background:rgba(5,150,105,0.1);color:var(--c3)">Task T2</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Inputs</div><div class="io-val"><code>source</code> — table name string<br><code>watermark</code> — datetime from T1</div></div>
+          <div class="logic">
+            <div class="logic-title">Query pattern</div>
+            <div class="logic-step"><span class="logic-step-num">SQL</span><code>SELECT * FROM {source} WHERE updated_at > :watermark ORDER BY updated_at ASC LIMIT 50000</code></div>
+            <div class="logic-step"><span class="logic-step-num">Why</span>LIMIT 50000 is a safety cap — at &lt;10K records/day this will never be hit</div>
+          </div>
+          <div class="io-row" style="margin-top:10px"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>list[dict]</code> — rows as dicts, pushed to XCom for T3/T4</div></div>
+          <div class="error-box">
+            <strong>Every PG table needs updated_at</strong>
+            Add a trigger on all tables: UPDATE updated_at = now() on every row change. This is how the watermark query finds new and changed rows efficiently.
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">validate_extract(rows, expected_min) → bool</div>
+          <span class="fn-type" style="background:rgba(5,150,105,0.1);color:var(--c3)">Task T3</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Inputs</div><div class="io-val"><code>rows</code> — list from T2 XCom<br><code>expected_min</code> — 0 for first run, else alert if 0 rows but PG has recent writes</div></div>
+          <div class="logic">
+            <div class="logic-title">Checks</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Schema: all required columns present in first row?</div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>Count: if 0 rows AND PG ingestion_log shows recent writes → raise alert (possible watermark bug)</div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>No data type coercion failures on sample of 10 rows</div>
+          </div>
+          <div class="io-row" style="margin-top:10px"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>True</code> if passes, raises <code>AirflowException</code> to fail the task if not</div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">load_to_bronze(rows, table_name) → int</div>
+          <span class="fn-type" style="background:rgba(5,150,105,0.1);color:var(--c3)">Task T4</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Inputs</div><div class="io-val"><code>rows</code> — list[dict] from T2<br><code>table_name</code> — "loans_raw" in ClickHouse</div></div>
+          <div class="logic">
+            <div class="logic-title">Write pattern</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Convert list[dict] to columnar format (ClickHouse prefers batches)</div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>Use <code>clickhouse-driver</code> <code>client.execute("INSERT INTO loans_raw VALUES", rows)</code></div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>Add <code>_etl_loaded_at = datetime.utcnow()</code> column to every row</div>
+            <div class="logic-step"><span class="logic-step-num">4.</span>No deduplication here — Bronze is append-only raw store</div>
+          </div>
+          <div class="io-row" style="margin-top:10px"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>int</code> — rows written to ClickHouse, used by T5 to validate</div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">update_watermark(source, max_updated_at)</div>
+          <span class="fn-type" style="background:rgba(5,150,105,0.1);color:var(--c3)">Task T5</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Inputs</div><div class="io-val"><code>max_updated_at</code> — max(updated_at) from the extracted rows</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Writes to</div><div class="io-val">Airflow Variable: <code>watermark_loans = max_updated_at.isoformat()</code></div></div>
+          <div class="return-box" style="border-left-color:var(--c2)">
+            <strong>Only update watermark AFTER successful Bronze write</strong>
+            If T4 fails and T5 runs anyway, you'll skip rows forever. T5 must be downstream of T4 with no skip-on-failure.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- 03: TRANSFORMS -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="sec-transforms">
+  <div class="sec-header">
+    <div class="sec-num">03</div>
+    <div class="sec-title">
+      <h1>Bronze → Silver → Gold</h1>
+      <p>transforms/ · ClickHouse SQL · Materialized Views · Derived columns</p>
+    </div>
+  </div>
+
+  <!-- Silver -->
+  <div class="stage open">
+    <div class="stage-header" onclick="toggleStage(this)">
+      <div class="stage-header-left">
+        <span class="stage-tag" style="background:rgba(5,150,105,0.1);color:var(--c3)">Silver Transform</span>
+        <div>
+          <div class="stage-name">Bronze → Silver: Loans</div>
+          <div class="stage-sub">silver_loans.sql — dedup, clean, derive loan_aging_bucket + npa_flag</div>
+        </div>
+      </div>
+      <span class="stage-chevron">▼</span>
+    </div>
+    <div class="stage-body">
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">build_silver_loans()</div>
+          <span class="fn-type" style="background:rgba(5,150,105,0.1);color:var(--c3)">ClickHouse SQL</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Source</div><div class="io-val"><code>loans_raw</code> (Bronze)</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Target</div><div class="io-val"><code>loans_clean</code> (Silver)</div></div>
+          <div class="logic">
+            <div class="logic-title">Transform steps in SQL</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Dedup: <code>ROW_NUMBER() OVER (PARTITION BY loan_id ORDER BY _etl_loaded_at DESC) = 1</code> — keep latest version of each loan</div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>Null handling: <code>COALESCE(tenure_months, 12)</code> for nullable fields with safe defaults</div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>Derive <code>dpd_days</code>: <code>dateDiff('day', due_date, today())</code> where status != 'CLOSED'</div>
+            <div class="logic-step"><span class="logic-step-num">4.</span>Derive <code>loan_aging_bucket</code>: CASE on dpd_days → 'CURRENT' / '1-30 DPD' / '31-60 DPD' / '61-90 DPD' / 'NPA'</div>
+            <div class="logic-step"><span class="logic-step-num">5.</span>Derive <code>npa_flag</code>: <code>dpd_days > 90 OR loan_status = 'NPA'</code></div>
+            <div class="logic-step"><span class="logic-step-num">6.</span>Derive <code>overdue_amount</code>: <code>principal_amount - coalesce(total_paid, 0)</code></div>
+          </div>
+          <div class="io-row" style="margin-top:10px"><div class="io-label" style="color:var(--c3)">Output cols added</div><div class="io-val"><code>dpd_days</code> · <code>loan_aging_bucket</code> · <code>npa_flag</code> · <code>overdue_amount</code> · <code>_silver_updated_at</code></div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">build_silver_calls()</div>
+          <span class="fn-type" style="background:rgba(5,150,105,0.1);color:var(--c3)">ClickHouse SQL</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Source</div><div class="io-val"><code>calls_raw</code> (Bronze)</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Target</div><div class="io-val"><code>calls_analyzed</code> (Silver)</div></div>
+          <div class="logic">
+            <div class="logic-title">Derived columns</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span><code>call_success_flag</code>: <code>call_status = 'COMPLETED' AND call_duration_sec > 30</code></div>
+            <div class="logic-step"><span class="logic-step-num">2.</span><code>call_hour</code>: <code>toHour(call_start_time)</code> — used later for after-hours detection in Phase 3</div>
+            <div class="logic-step"><span class="logic-step-num">3.</span><code>is_within_hours</code>: <code>call_hour BETWEEN 8 AND 19</code> — store this now, violations detected in Phase 3</div>
+            <div class="logic-step"><span class="logic-step-num">4.</span><code>contact_attempt_seq</code>: <code>ROW_NUMBER() OVER (PARTITION BY loan_id ORDER BY call_start_time)</code> — daily contact count</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">build_silver_payments()</div>
+          <span class="fn-type" style="background:rgba(5,150,105,0.1);color:var(--c3)">ClickHouse SQL</span>
+        </div>
+        <div class="fn-body">
+          <div class="logic">
+            <div class="logic-title">Derived columns</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span><code>payment_status</code>: map gateway codes → 'SUCCESS' / 'FAILED' / 'PENDING' / 'BOUNCED'</div>
+            <div class="logic-step"><span class="logic-step-num">2.</span><code>bounce_flag</code>: <code>gateway_status IN ('BOUNCE', 'RETURN', 'NSF')</code></div>
+            <div class="logic-step"><span class="logic-step-num">3.</span><code>partial_pay_flag</code>: <code>amount < emi_amount</code> (join to loans_clean for emi)</div>
+            <div class="logic-step"><span class="logic-step-num">4.</span><code>collection_efficiency</code>: <code>amount / emi_amount * 100</code></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Gold -->
+  <div class="stage">
+    <div class="stage-header" onclick="toggleStage(this)">
+      <div class="stage-header-left">
+        <span class="stage-tag" style="background:rgba(217,119,6,0.1);color:var(--c4)">Gold Materialized Views</span>
+        <div>
+          <div class="stage-name">Gold Layer — Pre-Aggregated Data Marts</div>
+          <div class="stage-sub">gold_views.sql — ClickHouse MVs that auto-update when Silver tables update</div>
+        </div>
+      </div>
+      <span class="stage-chevron">▼</span>
+    </div>
+    <div class="stage-body">
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">mv_lender_portfolio_summary</div>
+          <span class="fn-type" style="background:rgba(217,119,6,0.1);color:var(--c4)">Materialized View</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Source</div><div class="io-val"><code>loans_clean</code> + <code>payments_enriched</code></div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Serves</div><div class="io-val">Lender dashboard — portfolio health overview</div></div>
+          <div class="logic">
+            <div class="logic-title">Aggregation — GROUP BY lender_id, loan_aging_bucket</div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>total_loans_count</code>, <code>total_principal_disbursed</code></div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>npa_count</code>, <code>npa_amount</code>, <code>npa_ratio</code></div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>total_collected_today</code>, <code>collection_efficiency_pct</code></div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>bucket_breakdown</code> — count + amount per DPD bucket</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">mv_agent_assigned_loans</div>
+          <span class="fn-type" style="background:rgba(217,119,6,0.1);color:var(--c4)">Materialized View</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Source</div><div class="io-val"><code>loans_clean</code> + <code>calls_analyzed</code> + <code>agents_enriched</code></div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Serves</div><div class="io-val">Agent dashboard — my assigned loans + followup list</div></div>
+          <div class="logic">
+            <div class="logic-title">Aggregation — GROUP BY agent_id, loan_id</div>
+            <div class="logic-step"><span class="logic-step-num">→</span>Loan details: <code>borrower_name</code>, <code>dpd_days</code>, <code>overdue_amount</code>, <code>loan_aging_bucket</code></div>
+            <div class="logic-step"><span class="logic-step-num">→</span>Last call: <code>last_call_at</code>, <code>last_call_status</code>, <code>last_call_duration</code></div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>followup_due</code>: <code>last_call_at < today() - 1 AND loan_status = 'ACTIVE'</code></div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>calls_today</code>: count of calls by this agent on this loan today</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">mv_manager_branch_summary</div>
+          <span class="fn-type" style="background:rgba(217,119,6,0.1);color:var(--c4)">Materialized View</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Source</div><div class="io-val"><code>loans_clean</code> + <code>payments_enriched</code> + <code>calls_analyzed</code> + <code>agents_enriched</code></div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Serves</div><div class="io-val">Manager dashboard — branch-level daily performance</div></div>
+          <div class="logic">
+            <div class="logic-title">Aggregation — GROUP BY branch_id, toDate(today)</div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>agents_active_today</code>, <code>total_calls_made</code>, <code>calls_successful</code></div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>collection_today</code>, <code>collection_target</code>, <code>target_achievement_pct</code></div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>avg_call_duration</code>, <code>followups_pending</code></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">mv_hr_agent_performance_daily</div>
+          <span class="fn-type" style="background:rgba(217,119,6,0.1);color:var(--c4)">Materialized View</span>
+        </div>
+        <div class="fn-body">
+          <div class="logic">
+            <div class="logic-title">Aggregation — GROUP BY agent_id, toDate(call_start_time)</div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>total_calls</code>, <code>calls_completed</code>, <code>call_success_rate</code></div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>total_talk_time_min</code>, <code>avg_call_duration_sec</code></div>
+            <div class="logic-step"><span class="logic-step-num">→</span><code>amount_collected</code>, <code>loans_resolved</code></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="return-box" style="border-left-color:var(--c4);margin-top:12px">
+        <strong>ClickHouse MV Refresh Behaviour</strong>
+        ClickHouse Materialized Views update incrementally — when Silver tables receive inserts, the MV recalculates only for affected partition blocks. No full-table re-scan. This is why Gold query latency stays under 50ms even at TB scale. Your Airflow DAG triggers Silver transforms; Gold MVs self-update after Silver writes.
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- 04: SERVING -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="sec-serving">
+  <div class="sec-header">
+    <div class="sec-num">04</div>
+    <div class="sec-title">
+      <h1>Redis + FastAPI Serving</h1>
+      <p>api/ · Role-based routers · cache.py · Audit log middleware</p>
+    </div>
+  </div>
+
+  <div class="stage open">
+    <div class="stage-header" onclick="toggleStage(this)">
+      <div class="stage-header-left">
+        <span class="stage-tag" style="background:rgba(217,119,6,0.1);color:var(--c4)">Cache Layer</span>
+        <div>
+          <div class="stage-name">cache.py — Redis wrapper</div>
+          <div class="stage-sub">All dashboard endpoints go through this before hitting ClickHouse</div>
+        </div>
+      </div>
+      <span class="stage-chevron">▼</span>
+    </div>
+    <div class="stage-body">
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">get_or_fetch(cache_key, ttl, fetch_fn) → dict</div>
+          <span class="fn-type" style="background:rgba(217,119,6,0.1);color:var(--c4)">Core</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Inputs</div><div class="io-val"><code>cache_key</code> str — deterministic key built from role + endpoint + filters<br><code>ttl</code> int — seconds (30 for agent, 60 for manager/HR)<br><code>fetch_fn</code> callable — lambda that executes the ClickHouse query if cache miss</div></div>
+          <div class="logic">
+            <div class="logic-title">Logic</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Try <code>redis.get(cache_key)</code></div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>Hit: deserialize JSON → return immediately (no DB query)</div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>Miss: call <code>fetch_fn()</code> → ClickHouse query executes</div>
+            <div class="logic-step"><span class="logic-step-num">4.</span>Serialize result → <code>redis.setex(cache_key, ttl, json)</code></div>
+            <div class="logic-step"><span class="logic-step-num">5.</span>Return result</div>
+          </div>
+          <div class="io-row" style="margin-top:10px"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>dict</code> — the Gold layer query result, JSON serializable</div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">build_cache_key(role, endpoint, **filters) → str</div>
+          <span class="fn-type" style="background:rgba(217,119,6,0.1);color:var(--c4)">Utility</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Inputs</div><div class="io-val"><code>role</code> "agent" / "manager" / "lender" / "hr"<br><code>endpoint</code> "assigned_loans" / "portfolio_summary" etc<br><code>**filters</code> agent_id, date_range, branch_id etc</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>"agent:assigned_loans:agent_id=A001:date=2025-02-20"</code> — deterministic, collision-safe</div></div>
+          <div class="return-box" style="border-left-color:var(--c4)">
+            <strong>Sort filter keys before building key</strong>
+            <code>agent_id=A001&date=2025-02-20</code> and <code>date=2025-02-20&agent_id=A001</code> must produce the same cache key. Sort kwargs alphabetically before joining.
+          </div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">invalidate(pattern) → int</div>
+          <span class="fn-type" style="background:rgba(217,119,6,0.1);color:var(--c4)">Utility</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Input</div><div class="io-val"><code>pattern</code> str — e.g. <code>"lender:portfolio:lender_id=L42:*"</code></div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Uses</div><div class="io-val"><code>redis.scan_iter(pattern)</code> → delete all matching keys</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>int</code> — number of keys deleted. Called by Airflow after successful Gold MV refresh for lender data.</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FastAPI routers -->
+  <div class="stage">
+    <div class="stage-header" onclick="toggleStage(this)">
+      <div class="stage-header-left">
+        <span class="stage-tag" style="background:rgba(8,145,178,0.1);color:var(--c6)">FastAPI Routers</span>
+        <div>
+          <div class="stage-name">Role-based API endpoints</div>
+          <div class="stage-sub">routers/agent.py · lender.py · manager.py · hr.py</div>
+        </div>
+      </div>
+      <span class="stage-chevron">▼</span>
+    </div>
+    <div class="stage-body">
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">GET /agent/assigned-loans</div>
+          <span class="fn-type" style="background:rgba(8,145,178,0.1);color:var(--c6)">Endpoint</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Path params</div><div class="io-val">None</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Query params</div><div class="io-val"><code>date</code> optional date (default today) · <code>status_filter</code> optional</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Auth</div><div class="io-val">JWT → extract <code>agent_id</code>, <code>role</code> from token. Reject if role != "agent"</div></div>
+          <div class="logic">
+            <div class="logic-title">Handler flow</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Build cache key: <code>build_cache_key("agent", "assigned_loans", agent_id=agent_id, date=date)</code></div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>Call <code>get_or_fetch(key, ttl=30, fetch_fn=lambda: query_ch("SELECT ... FROM mv_agent_assigned_loans WHERE agent_id=..."))</code></div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>Log to audit_query_log (via middleware — automatic)</div>
+            <div class="logic-step"><span class="logic-step-num">4.</span>Return JSON response</div>
+          </div>
+          <div class="io-row" style="margin-top:10px"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>{"loans": [...], "total": int, "followups_due": int, "cache_hit": bool, "generated_at": datetime}</code></div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">GET /lender/portfolio-summary</div>
+          <span class="fn-type" style="background:rgba(8,145,178,0.1);color:var(--c6)">Endpoint</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Query params</div><div class="io-val"><code>as_of_date</code> optional · <code>bucket_filter</code> optional</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Cache TTL</div><div class="io-val">No TTL-only caching — use <code>invalidate()</code> pattern (lender accuracy requirement)</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>{"total_disbursed": float, "npa_ratio": float, "bucket_breakdown": {...}, "collection_efficiency": float, "generated_at": datetime}</code></div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">GET /manager/branch-summary</div>
+          <span class="fn-type" style="background:rgba(8,145,178,0.1);color:var(--c6)">Endpoint</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Query params</div><div class="io-val"><code>branch_id</code> required if manager manages multiple branches · <code>date</code></div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Cache TTL</div><div class="io-val">60 seconds</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>{"agents_active": int, "calls_made": int, "collection_today": float, "target_pct": float, "top_agents": [...], "followups_pending": int}</code></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- 05: AUDIT LOG -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="sec-audit">
+  <div class="sec-header">
+    <div class="sec-num">05</div>
+    <div class="sec-title">
+      <h1>Audit Query Log</h1>
+      <p>api/audit_log.py · FastAPI middleware · PostgreSQL write</p>
+    </div>
+  </div>
+
+  <div class="stage open">
+    <div class="stage-header" onclick="toggleStage(this)">
+      <div class="stage-header-left">
+        <span class="stage-tag" style="background:rgba(124,58,237,0.1);color:var(--c5)">Middleware</span>
+        <div>
+          <div class="stage-name">AuditLogMiddleware</div>
+          <div class="stage-sub">Wraps every request — transparent to all routers</div>
+        </div>
+      </div>
+      <span class="stage-chevron">▼</span>
+    </div>
+    <div class="stage-body">
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">dispatch(request, call_next) → Response</div>
+          <span class="fn-type" style="background:rgba(124,58,237,0.1);color:var(--c5)">Middleware</span>
+        </div>
+        <div class="fn-body">
+          <div class="logic">
+            <div class="logic-title">Runs on every API request automatically</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Extract from request: <code>user_id</code>, <code>user_role</code> from JWT · <code>path</code> · <code>query_params</code> · <code>ip_address</code></div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>Call <code>response = await call_next(request)</code> — execute the actual endpoint</div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>Extract <code>rows_returned</code> from response body (if JSON with a count field)</div>
+            <div class="logic-step"><span class="logic-step-num">4.</span>Fire-and-forget async write to <code>audit_query_log</code> in PostgreSQL — must not block response</div>
+            <div class="logic-step"><span class="logic-step-num">5.</span>Return response unchanged</div>
+          </div>
+          <div class="io-row" style="margin-top:10px"><div class="io-label" style="color:var(--c2)">Writes to PG</div><div class="io-val"><code>user_id</code>, <code>user_role</code>, <code>view_accessed</code>, <code>filters_applied</code> as JSONB, <code>queried_at</code>, <code>ip_address</code>, <code>rows_returned</code></div></div>
+          <div class="return-box" style="border-left-color:var(--c5)">
+            <strong>Use asyncio.create_task() for the PG write</strong>
+            The audit write must be non-blocking. If PostgreSQL is slow, the dashboard response must not wait. Use <code>asyncio.create_task(write_audit_log(...))</code> — fire and forget. Errors in audit writing should log to file but never propagate to user.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- 06: DATA QUALITY -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="section" id="sec-quality">
+  <div class="sec-header">
+    <div class="sec-num">06</div>
+    <div class="sec-title">
+      <h1>Data Quality Checks</h1>
+      <p>quality/validators.py · runs at ingestion + Silver→Gold gate</p>
+    </div>
+  </div>
+
+  <div class="stage open">
+    <div class="stage-header" onclick="toggleStage(this)">
+      <div class="stage-header-left">
+        <span class="stage-tag" style="background:rgba(8,145,178,0.1);color:var(--c6)">Validators</span>
+        <div>
+          <div class="stage-name">ValidationReport + check functions</div>
+          <div class="stage-sub">quality/validators.py · quality/report.py</div>
+        </div>
+      </div>
+      <span class="stage-chevron">▼</span>
+    </div>
+    <div class="stage-body">
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">ValidationReport (dataclass)</div>
+          <span class="fn-type" style="background:rgba(8,145,178,0.1);color:var(--c6)">Model</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Fields</div><div class="io-val">
+            <code>is_valid: bool</code> — false = abort write<br>
+            <code>source: str</code> — "loans", "calls" etc<br>
+            <code>total_rows: int</code><br>
+            <code>errors: list[str]</code> — hard failures, abort write<br>
+            <code>warnings: list[str]</code> — soft, write but flag<br>
+            <code>null_counts: dict[str, int]</code> — per column<br>
+            <code>duplicate_count: int</code><br>
+            <code>checked_at: datetime</code>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">check_nulls(df, required_cols) → list[str]</div>
+          <span class="fn-type" style="background:rgba(8,145,178,0.1);color:var(--c6)">Check</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Inputs</div><div class="io-val"><code>df</code> DataFrame · <code>required_cols</code> list of column names that must be non-null</div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val">List of error strings: <code>["loan_id has 3 nulls in rows [12, 45, 78]"]</code> — empty list = pass</div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">check_duplicates(df, pk_cols) → int</div>
+          <span class="fn-type" style="background:rgba(8,145,178,0.1);color:var(--c6)">Check</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Inputs</div><div class="io-val"><code>pk_cols</code> list — columns that form the unique key e.g. <code>["loan_id"]</code></div></div>
+          <div class="io-row"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>int</code> — count of duplicate rows. 0 = pass. &gt;0 = add to ValidationReport.warnings (not errors — upsert handles it)</div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">check_row_count_variance(source, current_count) → str|None</div>
+          <span class="fn-type" style="background:rgba(8,145,178,0.1);color:var(--c6)">Check</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Inputs</div><div class="io-val"><code>source</code> str · <code>current_count</code> int — rows in today's file</div></div>
+          <div class="logic">
+            <div class="logic-title">Logic</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Read last 7 days average row count from <code>ingestion_log</code></div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>If <code>current_count &lt; avg * 0.5</code> → warning: "Loan file has 60% fewer rows than 7-day average — possible data loss"</div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>If <code>current_count &gt; avg * 3</code> → warning: "Loan file has 3x more rows than average — verify source"</div>
+          </div>
+          <div class="io-row" style="margin-top:10px"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val">Warning string or <code>None</code> if within normal range</div></div>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-header">
+          <div class="fn-name">check_silver_to_gold_gate(source) → bool</div>
+          <span class="fn-type" style="background:rgba(8,145,178,0.1);color:var(--c6)">Gate Check</span>
+        </div>
+        <div class="fn-body">
+          <div class="io-row"><div class="io-label" style="color:var(--c2)">Called by</div><div class="io-val">Airflow DAG Task T6 — before triggering Silver → Gold MV refresh</div></div>
+          <div class="logic">
+            <div class="logic-title">Checks against Silver table</div>
+            <div class="logic-step"><span class="logic-step-num">1.</span>Silver row count ≥ Bronze row count (no rows dropped in transform)</div>
+            <div class="logic-step"><span class="logic-step-num">2.</span>No nulls in derived columns: <code>loan_aging_bucket</code>, <code>npa_flag</code></div>
+            <div class="logic-step"><span class="logic-step-num">3.</span>Referential integrity: all <code>loan_id</code> in <code>calls_analyzed</code> exist in <code>loans_clean</code></div>
+          </div>
+          <div class="io-row" style="margin-top:10px"><div class="io-label" style="color:var(--c3)">Returns</div><div class="io-val"><code>True</code> to proceed to Gold. <code>False</code> → Airflow task fails, Gold MVs not refreshed with bad data, alert fires.</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+</main>
+</div>
+
+<script>
+function show(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function toggleStage(header) {
+  const stage = header.parentElement;
+  stage.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
