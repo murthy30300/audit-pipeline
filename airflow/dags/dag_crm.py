@@ -8,7 +8,6 @@ from airflow.models import Variable
 from airflow.sdk.bases.hook import BaseHook
 from airflow.utils.email import send_email
 from airflow.providers.standard.operators.python import PythonOperator
-from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from psycopg2.extras import RealDictCursor
 from clickhouse_driver import Client as ClickHouseClient
@@ -19,7 +18,7 @@ EPOCH_UTC = datetime(1970, 1, 1, tzinfo=timezone.utc)
 SOURCE_NAME = "crm"
 SOURCE_TABLE = "crm"
 BRONZE_TABLE = "crm_raw"
-SILVER_DAG_ID = "silver_crm_transform"
+# SILVER_DAG_ID = "silver_crm_transform"
 REQUIRED_COLUMNS = ["customer_id", "name", "phone_number", "updated_at"]
 COERCION_RULES = [{"kind": "str", "field": "customer_id"}]
 
@@ -213,10 +212,10 @@ with dag:
     t3 = PythonOperator(task_id="validate_extract", python_callable=validate_extract)
     t4 = PythonOperator(task_id="load_to_bronze", python_callable=load_to_bronze)
     t5 = PythonOperator(task_id="update_watermark", python_callable=update_watermark)
-    t6 = TriggerDagRunOperator(
-        task_id="trigger_silver_transform",
-        trigger_dag_id=SILVER_DAG_ID,
-        conf={"source": SOURCE_NAME},
-        wait_for_completion=False,
-    )
-    t1 >> t2 >> t3 >> t4 >> t5 >> t6
+    # t6 = TriggerDagRunOperator(
+    #     task_id="trigger_silver_transform",
+    #     trigger_dag_id=SILVER_DAG_ID,
+    #     conf={"source": SOURCE_NAME},
+    #     wait_for_completion=False,
+    # )
+    t1 >> t2 >> t3 >> t4 >> t5 

@@ -8,7 +8,7 @@ from airflow.models import Variable
 from airflow.sdk.bases.hook import BaseHook
 from airflow.utils.email import send_email
 from airflow.providers.standard.operators.python import PythonOperator
-from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
+# from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from psycopg2.extras import RealDictCursor
 from clickhouse_driver import Client as ClickHouseClient
@@ -194,8 +194,44 @@ def update_watermark(**kwargs):
         LOGGER.info("No rows loaded for %s; watermark unchanged", SOURCE_NAME)
         return
     Variable.set(f"watermark_{SOURCE_NAME}", str(max_updated_at))
+# def run_silver_transform(**kwargs):
 
+#     LOGGER.info("Running silver loans transform")
 
+#     client = get_clickhouse_client()
+
+#     sql_path = "/opt/airflow/dags/transforms/silver_loans.sql"
+
+#     with open(sql_path, "r") as f:
+#         sql = f.read()
+
+#     for statement in sql.split(";"):
+#         statement = statement.strip()
+#         if statement:
+#             client.execute(statement)
+
+#     LOGGER.info("Silver loans transform completed")
+def run_silver_transform(**kwargs):
+
+    import requests
+
+    LOGGER.info("Running silver loans transform")
+
+    sql_path = "/opt/airflow/dags/transforms/silver_loans.sql"
+
+    with open(sql_path, "r") as f:
+        sql = f.read()
+
+    url = "http://clickhouse:8123/?database=compliance"
+
+    response = requests.post(url, data=sql)
+
+    if response.status_code != 200:
+        raise AirflowException(
+            f"ClickHouse SQL failed: {response.text}"
+        )
+
+    LOGGER.info("Silver loans transform completed")
 # DAG Definition
 default_args = {
     "owner": "airflow",
@@ -239,11 +275,15 @@ with dag:
         python_callable=update_watermark,
     )
 
-    t6 = TriggerDagRunOperator(
-        task_id="trigger_silver_transform",
-        trigger_dag_id=SILVER_DAG_ID,
-        conf={"source": SOURCE_NAME},
-        wait_for_completion=False,
+    # t6 = TriggerDagRunOperator(
+    #     task_id="trigger_silver_transform",
+    #     trigger_dag_id=SILVER_DAG_ID,
+    #     conf={"source": SOURCE_NAME},
+    #     wait_for_completion=False,
+    # )
+    t6 = PythonOperator(
+    task_id="silver_transform",
+    python_callable=run_silver_transform,
     )
 
     t1 >> t2 >> t3 >> t4 >> t5 >> t6

@@ -8,7 +8,7 @@ from airflow.models import Variable
 from airflow.sdk.bases.hook import BaseHook
 from airflow.utils.email import send_email
 from airflow.providers.standard.operators.python import PythonOperator
-from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
+# from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from psycopg2.extras import RealDictCursor
 from clickhouse_driver import Client as ClickHouseClient
@@ -190,6 +190,28 @@ def update_watermark(**kwargs):
         return
     Variable.set(f"watermark_{SOURCE_NAME}", str(max_updated_at))
 
+def run_silver_transform(**kwargs):
+
+    import requests
+
+    LOGGER.info("Running silver messages transform")
+
+    sql_path = "/opt/airflow/dags/transforms/silver_messages.sql"
+
+    with open(sql_path, "r") as f:
+        sql = f.read()
+
+    # ClickHouse HTTP API
+    url = "http://clickhouse:8123/?database=compliance"
+
+    response = requests.post(url, data=sql)
+
+    if response.status_code != 200:
+        raise AirflowException(
+            f"ClickHouse SQL failed: {response.text}"
+        )
+
+    LOGGER.info("Silver messages transform completed")
 
 default_args = {
     "owner": "airflow",
@@ -213,10 +235,8 @@ with dag:
     t3 = PythonOperator(task_id="validate_extract", python_callable=validate_extract)
     t4 = PythonOperator(task_id="load_to_bronze", python_callable=load_to_bronze)
     t5 = PythonOperator(task_id="update_watermark", python_callable=update_watermark)
-    t6 = TriggerDagRunOperator(
-        task_id="trigger_silver_transform",
-        trigger_dag_id=SILVER_DAG_ID,
-        conf={"source": SOURCE_NAME},
-        wait_for_completion=False,
-    )
+    t6 = PythonOperator(
+    task_id="silver_transform",
+    python_callable=run_silver_transform,
+)
     t1 >> t2 >> t3 >> t4 >> t5 >> t6
