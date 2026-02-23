@@ -1,7 +1,6 @@
 from dag_helpers import build_bronze_dag
 
-
-dag = build_bronze_dag(
+etl_crm_pg_to_bronze = build_bronze_dag(
     dag_id="etl_crm_pg_to_bronze",
     source_name="crm",
     source_table="crm",
@@ -10,3 +9,5 @@ dag = build_bronze_dag(
     required_columns=["customer_id", "name", "phone_number", "updated_at"],
     coercion_rules=[{"kind": "str", "field": "customer_id"}],
 )
+
+# __all__ = ['dag']

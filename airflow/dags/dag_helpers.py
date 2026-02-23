@@ -4,10 +4,10 @@ from typing import Any, Dict, List
 
 from airflow import DAG
 from airflow.exceptions import AirflowException
-from airflow.hooks.base import BaseHook
 from airflow.models import Variable
-from airflow.operators.python import PythonOperator
-from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+from airflow.hooks.base import BaseHook
+from airflow.providers.standard.operators.python import PythonOperator
+from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils.email import send_email
 from clickhouse_driver import Client as ClickHouseClient
 import psycopg2
