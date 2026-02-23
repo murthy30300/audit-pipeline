@@ -5,7 +5,7 @@ import logging
 from airflow import DAG
 from airflow.exceptions import AirflowException
 from airflow.models import Variable
-from airflow.hooks.base import BaseHook
+from airflow.sdk.bases.hook import BaseHook
 from airflow.utils.email import send_email
 from airflow.providers.standard.operators.python import PythonOperator
 from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
