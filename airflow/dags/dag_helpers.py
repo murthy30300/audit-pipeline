@@ -8,9 +8,9 @@ from airflow.hooks.base import BaseHook
 from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.utils.email import send_email
 from clickhouse_driver import Client as ClickHouseClient
-import psycopg2
 from psycopg2.extras import RealDictCursor
 
 
@@ -48,14 +48,8 @@ def on_failure_alert(context):
 
 
 def _get_postgres_connection():
-    conn = BaseHook.get_connection("postgres_default")
-    return psycopg2.connect(
-        host=conn.host,
-        port=conn.port,
-        dbname=conn.schema,
-        user=conn.login,
-        password=conn.password,
-    )
+    hook = PostgresHook(postgres_conn_id="postgres_compliance")
+    return hook.get_conn()
 
 
 def _get_clickhouse_client():
