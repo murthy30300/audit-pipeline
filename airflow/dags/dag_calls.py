@@ -5,20 +5,68 @@ import logging
 from airflow import DAG
 from airflow.exceptions import AirflowException
 from airflow.models import Variable
+from airflow.hooks.base import BaseHook
+from airflow.utils.email import send_email
 from airflow.providers.standard.operators.python import PythonOperator
 from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from psycopg2.extras import RealDictCursor
-
-from dag_helpers import on_failure_alert, get_postgres_connection, get_clickhouse_client, EPOCH_UTC
+from clickhouse_driver import Client as ClickHouseClient
 
 
 LOGGER = logging.getLogger(__name__)
+EPOCH_UTC = datetime(1970, 1, 1, tzinfo=timezone.utc)
 SOURCE_NAME = "calls"
 SOURCE_TABLE = "calls"
 BRONZE_TABLE = "calls_raw"
 SILVER_DAG_ID = "silver_calls_transform"
 REQUIRED_COLUMNS = ["call_id", "loan_id", "agent_id", "call_date", "call_duration_sec", "updated_at"]
 COERCION_RULES = [{"kind": "float", "field": "call_duration_sec"}]
+
+
+def on_failure_alert(context):
+    """Alert via email and Slack on task failure"""
+    dag_id = context.get("dag").dag_id if context.get("dag") else "unknown_dag"
+    task_id = context.get("task_instance").task_id if context.get("task_instance") else "unknown_task"
+    execution_date = context.get("execution_date")
+    exception = context.get("exception")
+    message = (
+        f"ETL failure detected\n"
+        f"DAG: {dag_id}\n"
+        f"Task: {task_id}\n"
+        f"Execution Date: {execution_date}\n"
+        f"Exception: {exception}"
+    )
+    alert_emails = Variable.get("alert_emails", default_var="")
+    if alert_emails:
+        recipients = [email.strip() for email in alert_emails.split(",") if email.strip()]
+        if recipients:
+            send_email(to=recipients, subject=f"[Airflow] Failure: {dag_id}.{task_id}", html_content=message)
+    slack_webhook = Variable.get("slack_webhook_url", default_var="")
+    if slack_webhook:
+        try:
+            import requests
+            requests.post(slack_webhook, json={"text": message}, timeout=10)
+        except Exception:
+            LOGGER.exception("Failed to send Slack alert")
+
+
+def get_postgres_connection():
+    """Get PostgreSQL connection for postgres_compliance"""
+    hook = PostgresHook(postgres_conn_id="postgres_compliance")
+    return hook.get_conn()
+
+
+def get_clickhouse_client():
+    """Get ClickHouse client from airflow connection"""
+    conn = BaseHook.get_connection("clickhouse_default")
+    return ClickHouseClient(
+        host=conn.host,
+        port=conn.port or 9000,
+        user=conn.login or "default",
+        password=conn.password or "",
+        database=conn.schema or "default",
+    )
 
 
 def get_watermark(**_kwargs) -> str:
