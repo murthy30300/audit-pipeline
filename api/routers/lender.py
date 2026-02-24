@@ -9,7 +9,6 @@ from api.routers._common import get_clickhouse_client
 
 router = APIRouter()
 
-
 @router.get("/lender/portfolio-summary")
 def portfolio_summary(
 
@@ -178,3 +177,38 @@ def portfolio_summary(
         fetch_fn=_fetch
 
     )
+
+
+@router.get("/lender/npa-alerts")
+def npa_alerts(limit: int = 50):
+    client = get_clickhouse_client()
+    rows = client.execute(
+        """
+        SELECT
+            loan_id,
+            borrower_id,
+            dpd_days,
+            overdue_amount,
+            loan_aging_bucket,
+            due_date
+        FROM loans_clean
+        WHERE loan_aging_bucket = 'NPA'
+        ORDER BY dpd_days DESC
+        LIMIT %(limit)s
+        """,
+        {"limit": limit},
+    )
+
+    alerts = [
+        {
+            "loan_id": r[0],
+            "borrower_id": r[1],
+            "dpd_days": int(r[2] or 0),
+            "overdue_amount": float(r[3] or 0),
+            "loan_aging_bucket": r[4],
+            "due_date": str(r[5]) if r[5] is not None else None,
+        }
+        for r in rows
+    ]
+
+    return {"alerts": alerts}

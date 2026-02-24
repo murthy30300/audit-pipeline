@@ -1,10 +1,9 @@
 from datetime import datetime
-from typing import Optional
 
-from fastapi import APIRouter, Header
+from fastapi import APIRouter
 
 from api.cache import build_cache_key, get_or_fetch
-from ._common import get_clickhouse_client, get_claims_from_auth, require_role
+from ._common import get_clickhouse_client
 
 
 router = APIRouter()
