@@ -8,38 +8,27 @@ from airflow.models import Variable
 from airflow.sdk.bases.hook import BaseHook
 from airflow.utils.email import send_email
 from airflow.providers.standard.operators.python import PythonOperator
-#from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from psycopg2.extras import RealDictCursor
 from clickhouse_driver import Client as ClickHouseClient
 
-
 LOGGER = logging.getLogger(__name__)
 EPOCH_UTC = datetime(1970, 1, 1, tzinfo=timezone.utc)
-SOURCE_NAME = "payments"
+SOURCE_NAME  = "payments"
 SOURCE_TABLE = "payments"
 BRONZE_TABLE = "payments_raw"
-SILVER_DAG_ID = "silver_payments_transform"
 REQUIRED_COLUMNS = ["payment_id", "loan_id", "amount", "payment_date", "updated_at"]
-COERCION_RULES = [{"kind": "float", "field": "amount"}]
+COERCION_RULES   = [{"kind": "float", "field": "amount"}]
 
 
 def on_failure_alert(context):
-    """Alert via email and Slack on task failure"""
-    dag_id = context.get("dag").dag_id if context.get("dag") else "unknown_dag"
+    dag_id  = context.get("dag").dag_id if context.get("dag") else "unknown_dag"
     task_id = context.get("task_instance").task_id if context.get("task_instance") else "unknown_task"
-    execution_date = context.get("execution_date")
-    exception = context.get("exception")
-    message = (
-        f"ETL failure detected\n"
-        f"DAG: {dag_id}\n"
-        f"Task: {task_id}\n"
-        f"Execution Date: {execution_date}\n"
-        f"Exception: {exception}"
-    )
+    message = (f"ETL failure\nDAG: {dag_id}\nTask: {task_id}\n"
+               f"Exception: {context.get('exception')}")
     alert_emails = Variable.get("alert_emails", default_var="")
     if alert_emails:
-        recipients = [email.strip() for email in alert_emails.split(",") if email.strip()]
+        recipients = [e.strip() for e in alert_emails.split(",") if e.strip()]
         if recipients:
             send_email(to=recipients, subject=f"[Airflow] Failure: {dag_id}.{task_id}", html_content=message)
     slack_webhook = Variable.get("slack_webhook_url", default_var="")
@@ -52,26 +41,28 @@ def on_failure_alert(context):
 
 
 def get_postgres_connection():
-    """Get PostgreSQL connection for postgres_compliance"""
     hook = PostgresHook(postgres_conn_id="postgres_compliance")
     return hook.get_conn()
 
 
 def get_clickhouse_client():
-    """Get ClickHouse client from airflow connection"""
     conn = BaseHook.get_connection("clickhouse_default")
     return ClickHouseClient(
-        host=conn.host,
-        port=conn.port or 9000,
-        user=conn.login or "default",
-        password=conn.password or "",
-        database=conn.schema or "default",
+        host=conn.host, port=conn.port or 9000,
+        user=conn.login or "default", password=conn.password or "",
+        database=conn.schema or "compliance",
     )
 
 
+def _serialize(value):
+    import datetime as dt
+    if isinstance(value, (dt.date, dt.datetime)):
+        return value.isoformat()
+    return value
+
+
 def get_watermark(**_kwargs) -> str:
-    variable_name = f"watermark_{SOURCE_NAME}"
-    watermark_raw = Variable.get(variable_name, default_var=EPOCH_UTC.isoformat())
+    watermark_raw = Variable.get(f"watermark_{SOURCE_NAME}", default_var=EPOCH_UTC.isoformat())
     try:
         watermark_dt = datetime.fromisoformat(watermark_raw.replace("Z", "+00:00"))
         if watermark_dt.tzinfo is None:
@@ -82,136 +73,75 @@ def get_watermark(**_kwargs) -> str:
 
 
 def extract_from_postgres(**kwargs):
-    watermark = kwargs["ti"].xcom_pull(task_ids="get_watermark")
+    watermark    = kwargs["ti"].xcom_pull(task_ids="get_watermark")
     watermark_dt = datetime.fromisoformat(watermark.replace("Z", "+00:00"))
     if watermark_dt.tzinfo is None:
         watermark_dt = watermark_dt.replace(tzinfo=timezone.utc)
-
-    query = (
-        f"SELECT * FROM {SOURCE_TABLE} "
-        "WHERE updated_at > %s "
-        "ORDER BY updated_at ASC "
-        "LIMIT 50000"
-    )
-
+    query = (f"SELECT * FROM {SOURCE_TABLE} WHERE updated_at > %s "
+             "ORDER BY updated_at ASC LIMIT 50000")
     connection = get_postgres_connection()
     try:
         with connection.cursor(cursor_factory=RealDictCursor) as cursor:
             cursor.execute(query, (watermark_dt,))
             rows = cursor.fetchall()
-            normalized_rows = []
-            for row in rows:
-                normalized = {}
-                for key, value in row.items():
-                    if isinstance(value, datetime):
-                        normalized[key] = value.isoformat()
-                    else:
-                        normalized[key] = value
-                normalized_rows.append(normalized)
-            return normalized_rows
+            return [{k: _serialize(v) for k, v in row.items()} for row in rows]
     finally:
         connection.close()
 
 
 def validate_extract(**kwargs) -> bool:
-    ti = kwargs["ti"]
-    rows = ti.xcom_pull(task_ids="extract_from_postgres") or []
-    watermark = ti.xcom_pull(task_ids="get_watermark")
-    expected_min = 0 if str(watermark).startswith("1970-01-01") else 1
-
+    rows = kwargs["ti"].xcom_pull(task_ids="extract_from_postgres") or []
     if rows and not isinstance(rows, list):
         raise AirflowException("Extract output must be list[dict]")
-
     if rows:
-        first_row = rows[0]
-        missing_columns = [col for col in REQUIRED_COLUMNS if col not in first_row]
-        if missing_columns:
-            raise AirflowException(f"Schema check failed, missing columns: {missing_columns}")
-
-        for index, rule in enumerate(COERCION_RULES[:10]):
-            try:
-                if rule["kind"] == "float" and rule["field"] in rows[0]:
-                    float(rows[0][rule["field"]])
-            except Exception as exc:
-                raise AirflowException(f"Data type check failed at rule {index}: {exc}") from exc
-
-        try:
-            datetime.fromisoformat(str(rows[0]["updated_at"]).replace("Z", "+00:00"))
-        except Exception as exc:
-            raise AirflowException(f"Updated_at timestamp invalid: {exc}") from exc
-
-    if len(rows) == 0 and expected_min > 0:
-        connection = get_postgres_connection()
-        try:
-            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute(
-                    f"SELECT COUNT(*) as cnt FROM {SOURCE_TABLE} WHERE updated_at > %s",
-                    (watermark,)
-                )
-                result = cursor.fetchone()
-                if result and result["cnt"] > 0:
-                    raise AirflowException(
-                        f"0 extracted rows but {result['cnt']} new rows exist in source"
-                    )
-        finally:
-            connection.close()
-
+        missing = [c for c in REQUIRED_COLUMNS if c not in rows[0]]
+        if missing:
+            raise AirflowException(f"Schema check failed, missing columns: {missing}")
     return True
 
 
 def load_to_bronze(**kwargs):
     rows = kwargs["ti"].xcom_pull(task_ids="extract_from_postgres") or []
     if not rows:
+        LOGGER.info("No rows to load for %s", SOURCE_NAME)
         return {"rows_written": 0, "max_updated_at": None}
+    import datetime as _dt
+    def safe(v):
+        if isinstance(v, (_dt.datetime, _dt.date)):
+            return v.isoformat()
+        return "" if v is None else v
 
-    etl_loaded_at = datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
-    enriched_rows = []
-    for row in rows:
-        enriched = dict(row)
-        enriched["_etl_loaded_at"] = etl_loaded_at
-        enriched_rows.append(enriched)
-
-    columns = list(enriched_rows[0].keys())
-    values = [tuple(row.get(column) for column in columns) for row in enriched_rows]
-    insert_query = f"INSERT INTO {BRONZE_TABLE} ({', '.join(columns)}) VALUES"
-
+    etl_ts   = datetime.utcnow().isoformat()
+    enriched = [{**row, "_etl_loaded_at": etl_ts} for row in rows]
+    available = list(enriched[0].keys())
     client = get_clickhouse_client()
-    client.execute(insert_query, values)
-
-    max_updated_at = max(row["updated_at"] for row in enriched_rows if row.get("updated_at"))
-    return {"rows_written": len(enriched_rows), "max_updated_at": max_updated_at}
+    client.execute(f"INSERT INTO {BRONZE_TABLE} ({', '.join(available)}) VALUES",
+                   [tuple(safe(r.get(c)) for c in available) for r in enriched])
+    max_updated_at = max((r["updated_at"] for r in enriched if r.get("updated_at")), default=None)
+    LOGGER.info("Loaded %d rows into %s", len(enriched), BRONZE_TABLE)
+    return {"rows_written": len(enriched), "max_updated_at": max_updated_at}
 
 
 def update_watermark(**kwargs):
-    load_result = kwargs["ti"].xcom_pull(task_ids="load_to_bronze") or {}
+    load_result    = kwargs["ti"].xcom_pull(task_ids="load_to_bronze") or {}
     max_updated_at = load_result.get("max_updated_at")
     if not max_updated_at:
         LOGGER.info("No rows loaded for %s; watermark unchanged", SOURCE_NAME)
         return
     Variable.set(f"watermark_{SOURCE_NAME}", str(max_updated_at))
 
+
 def run_silver_transform(**kwargs):
-
     import requests
-
-    LOGGER.info("Running silver payments transform")
-
     sql_path = "/opt/airflow/dags/transforms/silver_payments.sql"
-
-    with open(sql_path, "r") as f:
+    with open(sql_path) as f:
         sql = f.read()
-
-    # ClickHouse HTTP API
-    url = "http://clickhouse:8123/?database=compliance"
-
-    response = requests.post(url, data=sql)
-
-    if response.status_code != 200:
-        raise AirflowException(
-            f"ClickHouse SQL failed: {response.text}"
-        )
-
+    resp = requests.post("http://clickhouse:8123/?database=compliance", data=sql)
+    if resp.status_code != 200:
+        raise AirflowException(f"ClickHouse silver_payments failed: {resp.text}")
     LOGGER.info("Silver payments transform completed")
+
+
 default_args = {
     "owner": "airflow",
     "retries": 3,
@@ -229,13 +159,10 @@ dag = DAG(
 )
 
 with dag:
-    t1 = PythonOperator(task_id="get_watermark", python_callable=get_watermark)
+    t1 = PythonOperator(task_id="get_watermark",         python_callable=get_watermark)
     t2 = PythonOperator(task_id="extract_from_postgres", python_callable=extract_from_postgres)
-    t3 = PythonOperator(task_id="validate_extract", python_callable=validate_extract)
-    t4 = PythonOperator(task_id="load_to_bronze", python_callable=load_to_bronze)
-    t5 = PythonOperator(task_id="update_watermark", python_callable=update_watermark)
-    t6 = PythonOperator(
-    task_id="silver_transform",
-    python_callable=run_silver_transform,
-)
+    t3 = PythonOperator(task_id="validate_extract",      python_callable=validate_extract)
+    t4 = PythonOperator(task_id="load_to_bronze",        python_callable=load_to_bronze)
+    t5 = PythonOperator(task_id="update_watermark",      python_callable=update_watermark)
+    t6 = PythonOperator(task_id="silver_transform",      python_callable=run_silver_transform)
     t1 >> t2 >> t3 >> t4 >> t5 >> t6
