@@ -1,4 +1,5 @@
-CREATE TABLE calls_analyzed
+CREATE TABLE IF NOT EXISTS calls_analyzed
+
 ENGINE = MergeTree
 
 ORDER BY (loan_id, call_start_time)

@@ -153,8 +153,55 @@ def run_silver_transform(**kwargs):
     if resp.status_code != 200:
         raise AirflowException(f"ClickHouse silver_loans failed: {resp.text}")
     LOGGER.info("Silver loans transform completed")
+def ensure_gold_views(**kwargs):
 
+    sql_path = "/opt/airflow/dags/transforms/gold_views.sql"
 
+    client = get_clickhouse_client()
+
+    try:
+
+        with open(sql_path) as f:
+            sql = f.read()
+
+        # Remove comment blocks
+        import re
+
+        sql = re.sub(
+            r"/\*.*?\*/",
+            "",
+            sql,
+            flags=re.DOTALL
+        )
+
+        statements = [
+
+            stmt.strip()
+
+            for stmt in sql.split(";")
+
+            if stmt.strip()   # ⭐ VERY IMPORTANT
+
+        ]
+
+        for statement in statements:
+
+            LOGGER.info(
+                "Executing Gold SQL:\n%s",
+                statement[:150]
+            )
+
+            client.execute(statement)
+
+        LOGGER.info(
+            "Gold tables + views ensured successfully"
+        )
+
+    except Exception as e:
+
+        raise AirflowException(
+            f"Gold SQL execution failed : {str(e)}"
+        )
 default_args = {
     "owner": "airflow",
     "retries": 3,
@@ -178,4 +225,6 @@ with dag:
     t4 = PythonOperator(task_id="load_to_bronze",        python_callable=load_to_bronze)
     t5 = PythonOperator(task_id="update_watermark",      python_callable=update_watermark)
     t6 = PythonOperator(task_id="silver_transform",      python_callable=run_silver_transform)
-    t1 >> t2 >> t3 >> t4 >> t5 >> t6
+    t7 = PythonOperator(task_id="ensure_gold_views",     python_callable=ensure_gold_views,)
+
+    t1 >> t2 >> t3 >> t4 >> t5 >> t6 >> t7
