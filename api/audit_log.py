@@ -1,17 +1,36 @@
-# FastAPI middleware for audit logging
-import asyncio
+from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Request
 from datetime import datetime
 
-async def write_audit_log(user_id, user_role, view_accessed, filters_json, queried_at, ip_address, rows_returned):
-    # Async write to PostgreSQL audit_query_log table
-    pass
 
-class AuditLogMiddleware:
-    async def dispatch(self, request: Request, call_next):
-        # Extract user info, path, params, ip
+class AuditLogMiddleware(BaseHTTPMiddleware):
+
+    # ⭐ REQUIRED
+    def __init__(self, app):
+
+        super().__init__(app)
+
+
+    async def dispatch(
+
+        self,
+        request: Request,
+        call_next
+
+    ):
+
+        start = datetime.utcnow()
+
         response = await call_next(request)
-        # Extract rows_returned from response
-        # Fire-and-forget audit log write
-        asyncio.create_task(write_audit_log(...))
+
+        duration = (
+            datetime.utcnow() - start
+        ).total_seconds()
+
+        print(
+            f"[AUDIT] {request.method} {request.url.path}"
+            f" status={response.status_code}"
+            f" duration={duration:.3f}s"
+        )
+
         return response

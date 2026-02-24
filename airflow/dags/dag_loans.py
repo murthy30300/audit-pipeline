@@ -1,4 +1,5 @@
 """Loans ETL DAG: PostgreSQL -> ClickHouse bronze layer"""
+import datetime as dt
 from datetime import datetime, timedelta, timezone
 import logging
 import uuid
@@ -202,6 +203,68 @@ def ensure_gold_views(**kwargs):
         raise AirflowException(
             f"Gold SQL execution failed : {str(e)}"
         )
+import redis
+import json
+def serialize_value(value):
+
+    if isinstance(
+
+        value,
+
+        (dt.date,
+         dt.datetime)
+
+    ):
+
+        return value.isoformat()
+
+    return value
+def serialize_rows(rows):
+
+    return [
+
+        [
+
+            serialize_value(v)
+
+            for v in row
+
+        ]
+
+        for row in rows
+
+    ]
+
+def cache_gold_to_redis(**kwargs):
+
+    client = get_clickhouse_client()
+
+    r = redis.Redis(
+
+        host="redis",
+        port=6379,
+        decode_responses=True
+
+    )
+
+    rows = client.execute("""
+
+        SELECT *
+        FROM manager_branch_summary
+
+    """)
+
+    rows = serialize_rows(rows)
+
+    r.set(
+
+        "gold:manager_branch_summary",
+
+        json.dumps(rows)
+
+    )
+
+    print("Gold cached into Redis.")
 default_args = {
     "owner": "airflow",
     "retries": 3,
@@ -226,5 +289,5 @@ with dag:
     t5 = PythonOperator(task_id="update_watermark",      python_callable=update_watermark)
     t6 = PythonOperator(task_id="silver_transform",      python_callable=run_silver_transform)
     t7 = PythonOperator(task_id="ensure_gold_views",     python_callable=ensure_gold_views,)
-
-    t1 >> t2 >> t3 >> t4 >> t5 >> t6 >> t7
+    t8 = PythonOperator(task_id="cache_gold_to_redis",   python_callable=cache_gold_to_redis)
+    t1 >> t2 >> t3 >> t4 >> t5 >> t6 >> t7 >> t8

@@ -169,7 +169,7 @@ TO manager_branch_summary
 AS
 SELECT
 
-    ifNull(ag.branch_id,'unknown')
+    ifNull(nullIf(ag.branch_id,''),'unknown')
         AS branch_id,
 
     today() AS report_date,
@@ -412,7 +412,7 @@ INSERT INTO manager_branch_summary
 
 SELECT
 
-    ifNull(ag.branch_id,'unknown') AS branch_id,
+    ifNull(nullIf(ag.branch_id,''),'unknown') AS branch_id,
 
     today() AS report_date,
 
@@ -483,86 +483,68 @@ LEFT JOIN payments_clean p
 ON l.loan_id=p.loan_id
 
 GROUP BY branch_id;
+
+
 INSERT INTO agent_assigned_loans
 
 SELECT
 
-ifNull(a.agent_id,'unassigned')
-AS agent_id,
+ifNull(c.agent_id,'unassigned') AS agent_id,
 
-l.loan_id AS loan_id,
+l.loan_id,
 
-ifNull(ag.name,'')
-AS borrower_name,
+ifNull(l.borrower_id,'') AS borrower_name,
 
-toInt32(ifNull(l.dpd_days,0))
-AS dpd_days,
+toInt32(ifNull(l.dpd_days,0)),
 
-ifNull(l.overdue_amount,0)
-AS overdue_amount,
+ifNull(l.overdue_amount,0),
 
-l.loan_aging_bucket
-AS loan_aging_bucket,
+l.loan_aging_bucket,
 
-max(c.call_start_time)
-AS last_call_at,
+max(ifNull(c.call_start_time,
+toDateTime('1970-01-01 00:00:00'))) AS last_call_at,
 
-any(c.call_status)
-AS last_call_status,
+any(ifNull(c.call_status,'')),
 
-toUInt32(
-any(ifNull(c.call_duration_sec,0))
-)
-AS last_call_duration,
+toUInt32(any(ifNull(c.call_duration_sec,0))),
 
 toUInt8(
 
-(max(c.call_start_time)
+(max(ifNull(c.call_start_time,
+toDateTime('1970-01-01 00:00:00')))
 < now()-INTERVAL 1 DAY)
 
 AND
 
 upper(ifNull(l.loan_status,''))='ACTIVE'
 
-)
-
-AS followup_due,
+),
 
 countIf(
-
-c.call_id,
 
 toDate(c.call_start_time)=today()
 
 )
 
-AS calls_today
-
 FROM loans_clean l
 
 LEFT JOIN calls_analyzed c
-ON l.loan_id=c.loan_id
-
-LEFT JOIN agents_enriched a
-ON a.agent_id=c.agent_id
-
-LEFT JOIN agents_enriched ag
-ON ag.agent_id=a.agent_id
+ON l.borrower_id = c.loan_id
 
 GROUP BY
 
-agent_id,
-loan_id,
-borrower_name,
-dpd_days,
-overdue_amount,
-loan_aging_bucket,
+c.agent_id,
+l.loan_id,
+l.borrower_id,
+l.dpd_days,
+l.overdue_amount,
+l.loan_aging_bucket,
 l.loan_status;
 INSERT INTO manager_branch_summary
 
 SELECT
 
-ifNull(ag.branch_id,'unknown')
+ifNull(nullIf(ag.branch_id,''),'unknown')
 AS branch_id,
 
 today()

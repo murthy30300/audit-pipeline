@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NBFC Compliance Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f5f0;
+    --gray-1: #1a1a1a;
+    --gray-2: #2a2a2a;
+    --gray-3: #444;
+    --gray-4: #888;
+    --gray-5: #bbb;
+    --gray-6: #ddd;
+    --gray-7: #eee;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --border: 1px solid var(--gray-2);
+  }
+
+  html { font-size: 14px; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── LAYOUT ── */
+  .shell { display: flex; min-height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    border-right: var(--border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .brand {
+    padding: 24px 20px 20px;
+    border-bottom: var(--border);
+  }
+  .brand-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  .brand-sub {
+    font-size: 10px;
+    color: var(--gray-4);
+    margin-top: 3px;
+    font-family: var(--mono);
+  }
+
+  nav { padding: 16px 0; flex: 1; }
+
+  .nav-section {
+    padding: 6px 20px 2px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--gray-3);
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    font-size: 12px;
+    color: var(--gray-4);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all .15s;
+    user-select: none;
+  }
+  .nav-item:hover { color: var(--white); background: var(--gray-1); }
+  .nav-item.active {
+    color: var(--white);
+    border-left-color: var(--white);
+    background: var(--gray-1);
+  }
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gray-3);
+    flex-shrink: 0;
+  }
+  .nav-item.active .nav-dot { background: var(--white); }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: var(--border);
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--gray-3);
+  }
+  .status-dot {
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: #fff;
+    border-radius: 50%;
+    margin-right: 5px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    border-bottom: var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--black);
+    z-index: 10;
+  }
+
+  .page-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+  }
+  .page-title span { color: var(--white); }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .api-badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 3px 8px;
+    border: 1px solid var(--gray-3);
+    color: var(--gray-4);
+    letter-spacing: .08em;
+  }
+
+  .refresh-btn {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--gray-3);
+    color: var(--gray-4);
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .refresh-btn:hover { border-color: var(--white); color: var(--white); }
+
+  /* ── CONTENT ── */
+  .content { padding: 32px; flex: 1; overflow-y: auto; }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── INPUT ROW ── */
+  .input-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+  }
+  .field input, .field select {
+    background: var(--gray-1);
+    border: 1px solid var(--gray-2);
+    color: var(--white);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 7px 12px;
+    outline: none;
+    transition: border-color .15s;
+    min-width: 160px;
+  }
+  .field input:focus, .field select:focus { border-color: var(--gray-4); }
+  .field select option { background: var(--gray-1); }
+
+  .fetch-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity .15s;
+    white-space: nowrap;
+  }
+  .fetch-btn:hover { opacity: .85; }
+  .fetch-btn:active { opacity: .7; }
+
+  /* ── KPI GRID ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--gray-2);
+    border: 1px solid var(--gray-2);
+    margin-bottom: 28px;
+  }
+  .kpi {
+    background: var(--black);
+    padding: 20px 20px 16px;
+  }
+  .kpi-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1;
+  }
+  .kpi-unit {
+    font-size: 10px;
+    color: var(--gray-4);
+    margin-top: 4px;
+    font-family: var(--mono);
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+  }
+  .section-count {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--gray-3);
+  }
+
+  /* ── TABLE ── */
+  .tbl-wrap {
+    border: 1px solid var(--gray-2);
+    margin-bottom: 28px;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  thead tr {
+    border-bottom: 1px solid var(--gray-2);
+  }
+  th {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  td {
+    padding: 9px 14px;
+    color: var(--gray-5);
+    border-bottom: 1px solid var(--gray-1);
+    font-family: var(--mono);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--gray-1); color: var(--white); }
+  tbody tr { transition: background .1s; }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .08em;
+    padding: 2px 7px;
+    border: 1px solid currentColor;
+  }
+  .badge-ok   { color: var(--white); border-color: var(--gray-3); }
+  .badge-warn { color: #aaa; border-color: #555; }
+  .badge-bad  { color: var(--gray-4); border-color: var(--gray-3); }
+  .badge-npa  { color: var(--white); border-color: var(--gray-5); background: var(--gray-2); }
+
+  /* ── BUCKET BAR ── */
+  .bucket-bars { margin-bottom: 28px; }
+  .bucket-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .bucket-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gray-4);
+    width: 90px;
+    flex-shrink: 0;
+  }
+  .bucket-bar-wrap {
+    flex: 1;
+    height: 3px;
+    background: var(--gray-2);
+  }
+  .bucket-bar-fill {
+    height: 100%;
+    background: var(--white);
+    transition: width .5s ease;
+  }
+  .bucket-amt {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gray-4);
+    width: 100px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ── EMPTY / LOADING / ERROR ── */
+  .state-msg {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gray-3);
+    padding: 40px 0;
+    text-align: center;
+    border: 1px solid var(--gray-2);
+    margin-bottom: 28px;
+  }
+  .loading-dots::after {
+    content: '...';
+    animation: dots 1s steps(3, end) infinite;
+  }
+  @keyframes dots {
+    0%  { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+  }
+
+  /* ── HEALTH ── */
+  .health-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--gray-2);
+    border: 1px solid var(--gray-2);
+    margin-bottom: 28px;
+  }
+  .health-card {
+    background: var(--black);
+    padding: 18px 20px;
+  }
+  .health-service {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gray-4);
+    margin-bottom: 6px;
+  }
+  .health-status {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--white);
+  }
+  .health-status.err { color: var(--gray-3); }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--gray-2); margin: 24px 0; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gray-2); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-name">NBFC / Pilot</div>
+      <div class="brand-sub">compliance · dashboard</div>
+    </div>
+    <nav>
+      <div class="nav-section">Views</div>
+      <div class="nav-item active" onclick="switchView('health')">
+        <div class="nav-dot"></div>Health
+      </div>
+      <div class="nav-section" style="margin-top:8px">Roles</div>
+      <div class="nav-item" onclick="switchView('lender')">
+        <div class="nav-dot"></div>Lender
+      </div>
+      <div class="nav-item" onclick="switchView('agent')">
+        <div class="nav-dot"></div>Agent
+      </div>
+      <div class="nav-item" onclick="switchView('manager')">
+        <div class="nav-dot"></div>Manager
+      </div>
+      <div class="nav-item" onclick="switchView('hr')">
+        <div class="nav-dot"></div>HR
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div><span class="status-dot"></span>api live</div>
+      <div style="margin-top:4px">localhost:8000</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="page-title">dashboard / <span id="view-label">health</span></div>
+      <div class="topbar-right">
+        <div class="api-badge" id="api-url-badge">GET /health</div>
+        <button class="refresh-btn" onclick="refresh()">↻ refresh</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══════════════════════════════════════ HEALTH ══ -->
+      <div class="view active" id="view-health">
+        <div id="health-loading" class="state-msg"><span class="loading-dots">checking</span></div>
+        <div id="health-body" style="display:none">
+          <div class="health-grid" id="health-grid"></div>
+          <div class="section-header"><div class="section-title">Table Row Counts</div></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Table</th><th>Rows</th></tr></thead>
+              <tbody id="health-counts-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="health-error" class="state-msg" style="display:none"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════ LENDER ══ -->
+      <div class="view" id="view-lender">
+        <div class="input-row">
+          <div class="field">
+            <label>Lender ID</label>
+            <input id="lender-id" type="text" value="LENDER_001" placeholder="LENDER_001">
+          </div>
+          <div class="field">
+            <label>Bucket Filter</label>
+            <select id="lender-bucket">
+              <option value="">All Buckets</option>
+              <option>CURRENT</option>
+              <option>1-30 DPD</option>
+              <option>31-60 DPD</option>
+              <option>61-90 DPD</option>
+              <option>NPA</option>
+            </select>
+          </div>
+          <button class="fetch-btn" onclick="fetchLender()">Fetch</button>
+        </div>
+        <div id="lender-loading" class="state-msg" style="display:none"><span class="loading-dots">fetching</span></div>
+        <div id="lender-body" style="display:none">
+          <div class="kpi-grid" id="lender-kpis"></div>
+          <div class="section-header"><div class="section-title">Portfolio by Bucket</div></div>
+          <div class="bucket-bars" id="lender-buckets"></div>
+          <div class="section-header"><div class="section-title">NPA Alerts</div><div class="section-count" id="lender-npa-count"></div></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Loan ID</th><th>Borrower</th><th>DPD</th><th>Overdue ₹</th><th>Bucket</th><th>Due Date</th></tr></thead>
+              <tbody id="lender-npa-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="lender-error" class="state-msg" style="display:none"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════ AGENT ══ -->
+      <div class="view" id="view-agent">
+        <div class="input-row">
+          <div class="field">
+            <label>Agent ID</label>
+            <input id="agent-id" type="text" value="AGT_501" placeholder="AGT_501">
+          </div>
+          <div class="field">
+            <label>Date</label>
+            <input id="agent-date" type="date">
+          </div>
+          <div class="field">
+            <label>Status Filter</label>
+            <select id="agent-status">
+              <option value="">All</option>
+              <option>COMPLETED</option>
+              <option>NO_ANSWER</option>
+              <option>FAILED</option>
+            </select>
+          </div>
+          <button class="fetch-btn" onclick="fetchAgent()">Fetch</button>
+        </div>
+        <div id="agent-loading" class="state-msg" style="display:none"><span class="loading-dots">fetching</span></div>
+        <div id="agent-body" style="display:none">
+          <div class="kpi-grid" id="agent-kpis"></div>
+          <hr class="divider">
+          <div class="section-header">
+            <div class="section-title">Assigned Loans</div>
+            <div class="section-count" id="agent-loans-count"></div>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Loan ID</th><th>Borrower</th><th>DPD</th><th>Overdue ₹</th><th>Bucket</th><th>Last Call</th><th>Last Status</th><th>Followup</th></tr></thead>
+              <tbody id="agent-loans-body"></tbody>
+            </table>
+          </div>
+          <div class="section-header"><div class="section-title">Call History — Today</div></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Call ID</th><th>Loan ID</th><th>Started</th><th>Duration</th><th>Status</th><th>Success</th><th>Hours</th></tr></thead>
+              <tbody id="agent-calls-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="agent-error" class="state-msg" style="display:none"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════ MANAGER ══ -->
+      <div class="view" id="view-manager">
+        <div class="input-row">
+          <div class="field">
+            <label>Branch ID</label>
+            <input id="manager-branch" type="text" value="BR_001" placeholder="BR_001">
+          </div>
+          <div class="field">
+            <label>Manager ID</label>
+            <input id="manager-id" type="text" value="MGR_001" placeholder="MGR_001">
+          </div>
+          <div class="field">
+            <label>Date</label>
+            <input id="manager-date" type="date">
+          </div>
+          <button class="fetch-btn" onclick="fetchManager()">Fetch</button>
+        </div>
+        <div id="manager-loading" class="state-msg" style="display:none"><span class="loading-dots">fetching</span></div>
+        <div id="manager-body" style="display:none">
+          <div class="kpi-grid" id="manager-kpis"></div>
+          <hr class="divider">
+          <div class="section-header"><div class="section-title">Top Agents Today</div></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Agent ID</th><th>Calls Made</th><th>Successful</th><th>Avg Duration (s)</th></tr></thead>
+              <tbody id="manager-agents-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="manager-error" class="state-msg" style="display:none"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════ HR ══ -->
+      <div class="view" id="view-hr">
+        <div class="input-row">
+          <div class="field">
+            <label>Date</label>
+            <input id="hr-date" type="date">
+          </div>
+          <div class="field">
+            <label>Agent ID (optional)</label>
+            <input id="hr-agent" type="text" placeholder="AGT_501">
+          </div>
+          <button class="fetch-btn" onclick="fetchHR()">Fetch</button>
+        </div>
+        <div id="hr-loading" class="state-msg" style="display:none"><span class="loading-dots">fetching</span></div>
+        <div id="hr-body" style="display:none">
+          <div class="kpi-grid" id="hr-kpis"></div>
+          <hr class="divider">
+          <div class="section-header">
+            <div class="section-title">Agent Performance</div>
+            <div class="section-count" id="hr-agents-count"></div>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Agent ID</th><th>Date</th><th>Calls</th><th>Success Rate</th><th>Talk Time (min)</th><th>Collections ₹</th></tr></thead>
+              <tbody id="hr-agents-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="hr-error" class="state-msg" style="display:none"></div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div><!-- /shell -->
+
+<script>
+const API = 'http://localhost:8000/dashboard';
+const today = new Date().toISOString().split('T')[0];
+
+// Set date defaults
+['agent-date','manager-date','hr-date'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.value = today;
+});
+
+// ── VIEW SWITCHING ──────────────────────────────────────────────────
+const VIEWS = ['health','lender','agent','manager','hr'];
+let currentView = 'health';
+
+function switchView(name) {
+  VIEWS.forEach(v => {
+    document.getElementById('view-' + v).classList.toggle('active', v === name);
+    document.querySelectorAll('.nav-item').forEach(el => {
+      if (el.textContent.trim().toLowerCase() === name) el.classList.add('active');
+      else el.classList.remove('active');
+    });
+  });
+  currentView = name;
+  document.getElementById('view-label').textContent = name;
+  document.getElementById('api-url-badge').textContent = apiLabel(name);
+  autoFetch(name);
+}
+
+function apiLabel(v) {
+  const labels = {
+    health:  'GET /health',
+    lender:  'GET /lender/portfolio-summary',
+    agent:   'GET /agent/assigned-loans',
+    manager: 'GET /manager/branch-summary',
+    hr:      'GET /hr/performance',
+  };
+  return labels[v] || '';
+}
+
+function refresh() { autoFetch(currentView); }
+
+function autoFetch(v) {
+  if (v === 'health')   fetchHealth();
+  if (v === 'lender')   fetchLender();
+  if (v === 'agent')    fetchAgent();
+  if (v === 'manager')  fetchManager();
+  if (v === 'hr')       fetchHR();
+}
+
+// ── HELPERS ────────────────────────────────────────────────────────
+function fmt(n, decimals = 0) {
+  if (n == null) return '—';
+  const num = parseFloat(n);
+  if (isNaN(num)) return '—';
+  if (Math.abs(num) >= 1e7) return (num / 1e7).toFixed(1) + 'Cr';
+  if (Math.abs(num) >= 1e5) return (num / 1e5).toFixed(1) + 'L';
+  return num.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function bucketBadge(b) {
+  if (!b) return '<span class="badge badge-ok">—</span>';
+  const cls = b === 'NPA' ? 'badge-npa' : b === 'CURRENT' ? 'badge-ok' : 'badge-warn';
+  return `<span class="badge ${cls}">${b}</span>`;
+}
+
+function bool(v) { return v ? '✓' : '·'; }
+
+function showLoading(id)  { document.getElementById(id+'-loading').style.display='block'; document.getElementById(id+'-body').style.display='none'; document.getElementById(id+'-error').style.display='none'; }
+function showBody(id)     { document.getElementById(id+'-loading').style.display='none'; document.getElementById(id+'-body').style.display='block'; document.getElementById(id+'-error').style.display='none'; }
+function showError(id, msg) { document.getElementById(id+'-loading').style.display='none'; document.getElementById(id+'-body').style.display='none'; const el=document.getElementById(id+'-error'); el.style.display='block'; el.textContent='error: ' + msg; }
+
+async function apiFetch(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
+  return r.json();
+}
+
+// ── HEALTH ─────────────────────────────────────────────────────────
+async function fetchHealth() {
+  showLoading('health');
+  try {
+    const d = await apiFetch(`${API}/health`);
+    const grid = document.getElementById('health-grid');
+    grid.innerHTML = '';
+
+    // Status card
+    grid.innerHTML += card('Status', `<span style="color:${d.status==='ok'?'#fff':'#666'}">${d.status?.toUpperCase()}</span>`);
+
+    // Service cards
+    const svc = d.services || {};
+    ['clickhouse','redis'].forEach(s => {
+      const val = svc[s] || '—';
+      const ok  = val === 'ok';
+      grid.innerHTML += card(s, `<span class="health-status${ok?'':' err'}">${val}</span>`);
+    });
+
+    // Table counts
+    const counts = svc.table_counts || {};
+    if (typeof counts === 'object') {
+      const tbody = document.getElementById('health-counts-body');
+      tbody.innerHTML = Object.entries(counts).map(([tbl, n]) =>
+        `<tr><td>${tbl}</td><td>${n.toLocaleString()}</td></tr>`
+      ).join('');
+    }
+
+    showBody('health');
+  } catch(e) { showError('health', e.message); }
+}
+
+function card(label, val) {
+  return `<div class="health-card"><div class="health-service">${label}</div><div>${val}</div></div>`;
+}
+
+// ── LENDER ─────────────────────────────────────────────────────────
+async function fetchLender() {
+  const lenderId = document.getElementById('lender-id').value.trim();
+  const bucket   = document.getElementById('lender-bucket').value;
+  if (!lenderId) return;
+  showLoading('lender');
+  try {
+    const params = new URLSearchParams({ lender_id: lenderId });
+    if (bucket) params.set('bucket_filter', bucket);
+
+    const [port, npa] = await Promise.all([
+      apiFetch(`${API}/lender/portfolio-summary?${params}`),
+      apiFetch(`${API}/lender/npa-alerts?lender_id=${lenderId}`).catch(() => ({ alerts: [] })),
+    ]);
+
+    // KPIs
+    document.getElementById('lender-kpis').innerHTML = [
+      kpi('Total Disbursed', '₹ ' + fmt(port.total_disbursed), ''),
+      kpi('NPA Amount',      '₹ ' + fmt(port.npa_amount), ''),
+      kpi('NPA Ratio',       fmt(port.npa_ratio, 2), '%'),
+      kpi('Collection Eff.', fmt(port.collection_efficiency, 1), '%'),
+    ].join('');
+
+    // Bucket bars
+    const buckets = port.bucket_breakdown || {};
+    const maxAmt  = Math.max(...Object.values(buckets), 1);
+    document.getElementById('lender-buckets').innerHTML = Object.entries(buckets).map(([b, amt]) =>
+      `<div class="bucket-row">
+        <div class="bucket-label">${b}</div>
+        <div class="bucket-bar-wrap"><div class="bucket-bar-fill" style="width:${(amt/maxAmt*100).toFixed(1)}%"></div></div>
+        <div class="bucket-amt">₹ ${fmt(amt)}</div>
+      </div>`
+    ).join('') || '<div style="font-family:var(--mono);font-size:11px;color:var(--gray-3);padding:12px 0">No bucket data</div>';
+
+    // NPA alerts table
+    const alerts = npa.alerts || [];
+    document.getElementById('lender-npa-count').textContent = alerts.length + ' loans';
+    document.getElementById('lender-npa-body').innerHTML = alerts.length
+      ? alerts.map(a =>
+          `<tr>
+            <td>${a.loan_id}</td>
+            <td>${a.borrower_id || '—'}</td>
+            <td>${a.dpd_days}</td>
+            <td>₹ ${fmt(a.overdue_amount)}</td>
+            <td>${bucketBadge(a.loan_aging_bucket)}</td>
+            <td>${a.due_date || '—'}</td>
+          </tr>`
+        ).join('')
+      : '<tr><td colspan="6" style="color:var(--gray-3);text-align:center">No NPA loans</td></tr>';
+
+    showBody('lender');
+  } catch(e) { showError('lender', e.message); }
+}
+
+// ── AGENT ──────────────────────────────────────────────────────────
+async function fetchAgent() {
+  const agentId = document.getElementById('agent-id').value.trim();
+  const date    = document.getElementById('agent-date').value || today;
+  const status  = document.getElementById('agent-status').value;
+  if (!agentId) return;
+  showLoading('agent');
+  try {
+    const lParams = new URLSearchParams({ agent_id: agentId, date });
+    if (status) lParams.set('status_filter', status);
+
+    const [loans, calls] = await Promise.all([
+      apiFetch(`${API}/agent/assigned-loans?${lParams}`),
+      apiFetch(`${API}/agent/call-history?agent_id=${agentId}&date=${date}`).catch(() => ({ calls: [], total_calls: 0 })),
+    ]);
+
+    // KPIs
+    document.getElementById('agent-kpis').innerHTML = [
+      kpi('Assigned Loans',  loans.total || 0, ''),
+      kpi('Followups Due',   loans.followups_due || 0, ''),
+      kpi('Calls Today',     calls.total_calls || 0, ''),
+      kpi('Successful',      calls.successful || 0, ''),
+      kpi('Talk Time',       fmt((calls.total_talk_sec || 0) / 60, 1), 'min'),
+    ].join('');
+
+    // Loans table
+    const loanList = loans.loans || [];
+    document.getElementById('agent-loans-count').textContent = loanList.length + ' loans';
+    document.getElementById('agent-loans-body').innerHTML = loanList.length
+      ? loanList.map(l =>
+          `<tr>
+            <td>${l.loan_id}</td>
+            <td>${l.borrower_name || '—'}</td>
+            <td>${l.dpd_days}</td>
+            <td>₹ ${fmt(l.overdue_amount)}</td>
+            <td>${bucketBadge(l.loan_aging_bucket)}</td>
+            <td>${l.last_call_at ? l.last_call_at.substring(0,16).replace('T',' ') : '—'}</td>
+            <td>${l.last_call_status || '—'}</td>
+            <td>${l.followup_due ? '⚑' : '·'}</td>
+          </tr>`
+        ).join('')
+      : '<tr><td colspan="8" style="color:var(--gray-3);text-align:center">No loans assigned</td></tr>';
+
+    // Calls table
+    const callList = calls.calls || [];
+    document.getElementById('agent-calls-body').innerHTML = callList.length
+      ? callList.map(c =>
+          `<tr>
+            <td>${c.call_id}</td>
+            <td>${c.loan_id}</td>
+            <td>${c.call_start_time ? c.call_start_time.substring(0,16).replace('T',' ') : '—'}</td>
+            <td>${c.call_duration_sec}s</td>
+            <td>${c.call_status || '—'}</td>
+            <td>${bool(c.call_success_flag)}</td>
+            <td>${bool(c.is_within_hours)}</td>
+          </tr>`
+        ).join('')
+      : '<tr><td colspan="7" style="color:var(--gray-3);text-align:center">No calls today</td></tr>';
+
+    showBody('agent');
+  } catch(e) { showError('agent', e.message); }
+}
+
+// ── MANAGER ────────────────────────────────────────────────────────
+async function fetchManager() {
+  const branchId  = document.getElementById('manager-branch').value.trim();
+  const managerId = document.getElementById('manager-id').value.trim();
+  const date      = document.getElementById('manager-date').value || today;
+  if (!branchId) return;
+  showLoading('manager');
+  try {
+    const params = new URLSearchParams({ branch_id: branchId, date, manager_id: managerId });
+    const d = await apiFetch(`${API}/manager/branch-summary?${params}`);
+
+    document.getElementById('manager-kpis').innerHTML = [
+      kpi('Agents Active',    d.agents_active_today || 0, ''),
+      kpi('Calls Made',       d.calls_made || 0, ''),
+      kpi('Successful',       d.calls_successful || 0, ''),
+      kpi('Collection Today', '₹ ' + fmt(d.collection_today), ''),
+      kpi('Target',           '₹ ' + fmt(d.collection_target), ''),
+      kpi('Achievement',      fmt(d.target_pct, 1), '%'),
+      kpi('Followups Pending',d.followups_pending || 0, ''),
+    ].join('');
+
+    const agents = d.top_agents || [];
+    document.getElementById('manager-agents-body').innerHTML = agents.length
+      ? agents.map(a =>
+          `<tr>
+            <td>${a.agent_id}</td>
+            <td>${a.calls_made}</td>
+            <td>${a.calls_successful}</td>
+            <td>${a.avg_duration_sec}s</td>
+          </tr>`
+        ).join('')
+      : '<tr><td colspan="4" style="color:var(--gray-3);text-align:center">No agent data</td></tr>';
+
+    showBody('manager');
+  } catch(e) { showError('manager', e.message); }
+}
+
+// ── HR ─────────────────────────────────────────────────────────────
+async function fetchHR() {
+  const date    = document.getElementById('hr-date').value || today;
+  const agentId = document.getElementById('hr-agent').value.trim();
+  showLoading('hr');
+  try {
+    const params = new URLSearchParams({ date });
+    if (agentId) params.set('agent_id', agentId);
+    const d = await apiFetch(`${API}/hr/performance?${params}`);
+
+    document.getElementById('hr-kpis').innerHTML = [
+      kpi('Total Agents',    d.total_agents || 0, ''),
+      kpi('Total Calls',     d.total_calls || 0, ''),
+      kpi('Avg Success Rate',fmt(d.avg_success_rate, 1), '%'),
+      kpi('Total Collections','₹ ' + fmt(d.total_collections), ''),
+    ].join('');
+
+    const agents = d.agents || [];
+    document.getElementById('hr-agents-count').textContent = agents.length + ' agents';
+    document.getElementById('hr-agents-body').innerHTML = agents.length
+      ? agents.map(a =>
+          `<tr>
+            <td>${a.agent_id}</td>
+            <td>${a.report_date || '—'}</td>
+            <td>${a.total_calls}</td>
+            <td>${fmt(a.success_rate, 1)}%</td>
+            <td>${fmt(a.talk_time_min, 1)}</td>
+            <td>₹ ${fmt(a.amount_collected)}</td>
+          </tr>`
+        ).join('')
+      : '<tr><td colspan="6" style="color:var(--gray-3);text-align:center">No performance data</td></tr>';
+
+    showBody('hr');
+  } catch(e) { showError('hr', e.message); }
+}
+
+// ── KPI HELPER ─────────────────────────────────────────────────────
+function kpi(label, value, unit) {
+  return `<div class="kpi">
+    <div class="kpi-label">${label}</div>
+    <div class="kpi-value">${value}</div>
+    ${unit ? `<div class="kpi-unit">${unit}</div>` : ''}
+  </div>`;
+}
+
+// ── INIT ───────────────────────────────────────────────────────────
+fetchHealth();
+</script>
+</body>
+</html>

@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import APIRouter, Header, HTTPException
 
 from api.cache import build_cache_key, get_or_fetch, r
-from ._common import get_claims_from_auth, require_role, get_clickhouse_client
+from ._common import get_clickhouse_client, get_claims_from_auth, require_role
 
 router = APIRouter()
 
@@ -13,30 +13,17 @@ router = APIRouter()
 def branch_summary(
     branch_id: Optional[str] = None,
     date: Optional[str] = None,
-    authorization: Optional[str] = Header(default=None),
+    manager_id: Optional[str] = None,
 ):
-    claims = get_claims_from_auth(authorization)
-    require_role(claims, "manager")
-
-    managed_branch_ids = claims.get("branch_ids") or claims.get("managed_branches") or []
-    if isinstance(managed_branch_ids, str):
-        managed_branch_ids = [item.strip() for item in managed_branch_ids.split(",") if item.strip()]
-
-    if branch_id:
-        selected_branch_id = branch_id
-    else:
-        if len(managed_branch_ids) > 1:
-            raise HTTPException(status_code=400, detail="branch_id is required for multi-branch managers")
-        selected_branch_id = managed_branch_ids[0] if managed_branch_ids else str(claims.get("branch_id") or "")
-
+    selected_branch_id = branch_id or ""
     if not selected_branch_id:
-        raise HTTPException(status_code=400, detail="Unable to determine branch_id")
+        raise HTTPException(status_code=400, detail="branch_id is required for this demo")
 
     query_date = date or datetime.utcnow().date().isoformat()
     cache_key = build_cache_key(
         "manager",
         "branch_summary",
-        manager_id=str(claims.get("manager_id") or claims.get("sub") or claims.get("user_id") or ""),
+        manager_id=manager_id or "demo",
         branch_id=selected_branch_id,
         date=query_date,
     )
@@ -105,7 +92,7 @@ def branch_summary(
         ]
 
         return {
-            "agents_active": agents_active,
+            "agents_active_today": agents_active,
             "calls_made": calls_made,
             "collection_today": collection_today,
             "target_pct": target_pct,
@@ -117,6 +104,7 @@ def branch_summary(
         }
 
     result = get_or_fetch(cache_key, ttl=60, fetch_fn=_fetch)
-    result["cache_hit"] = cache_hit
-    result.setdefault("generated_at", datetime.utcnow().isoformat())
+    if isinstance(result, dict):
+        result["cache_hit"] = cache_hit
+        result.setdefault("generated_at", datetime.utcnow().isoformat())
     return result
